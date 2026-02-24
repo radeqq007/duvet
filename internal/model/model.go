@@ -147,7 +147,7 @@ func (m Model) View() string {
 	}
 
 	var leftPane string
-	if m.Focus == pane.LeftPane {
+	if m.Focus == pane.Left {
 		leftPane = styles.FocusedPaneStyle.
 			Width(m.LeftPaneW).
 			Height(m.Height - 2).
@@ -181,7 +181,7 @@ func (m Model) View() string {
 	}
 
 	var rightPane string
-	if m.Focus == pane.RightPane {
+	if m.Focus == pane.Right {
 		rightPane = styles.FocusedPaneStyle.
 			Width(m.RightPaneW).
 			Height(m.Height - 2).
@@ -206,7 +206,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "up", "k":
-			if m.Focus == pane.LeftPane && m.Cursor > 0 {
+			if m.Focus == pane.Left && m.Cursor > 0 {
 				m.Cursor--
 
 				if m.Cursor < m.LeftScroll {
@@ -221,7 +221,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "down", "j":
-			if m.Focus == pane.LeftPane && m.Cursor < len(m.FileTree)-1 {
+			if m.Focus == pane.Left && m.Cursor < len(m.FileTree)-1 {
 				m.Cursor++
 
 				visibleHeight := m.Height - 4
@@ -242,12 +242,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "ctrl+right":
-			if m.Focus == pane.LeftPane {
+			if m.Focus == pane.Left {
 				m.Focus = 1
 			}
 
 		case "ctrl+left":
-			if m.Focus == pane.RightPane {
+			if m.Focus == pane.Right {
 				m.Focus = 0
 			}
 

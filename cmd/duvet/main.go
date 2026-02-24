@@ -115,28 +115,31 @@ func (m model) View() string {
 		Height(m.height - 2).
 		Render(leftContent)
 
-	rightContent := ""
+	var rightContent strings.Builder
 	if !m.fileTree[m.cursor].isDir {
 		file := filepath.Join(m.curPath, m.fileTree[m.cursor].name)
 		content, _ := readFileContent(file)
 
-		for i, line := range strings.Split(content, "\n") {
-			if i > visibleHeight {
-				break
+		lines := strings.Split(content, "\n")
+		i := 0
+		for i < min(visibleHeight, len(lines)) {
+			_, _ = rightContent.WriteString(lines[i] + "\n")
+			if len(lines[i]) > m.rightPaneW {
+				i++
 			}
-
-			rightContent += line + "\n"
+			
+			i++
 		}
 	} else {
 		for range visibleHeight {
-			rightContent += "\n"
+			_ = rightContent.WriteByte('\n')
 		}
 	}
 
 	rightPane := paneStyle.
 		Width(m.rightPaneW).
 		Height(m.height - 2).
-		Render(rightContent)
+		Render(rightContent.String())
 
 	view := lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
 

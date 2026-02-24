@@ -186,6 +186,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.leftScroll = m.cursor
 				}
 			} else {
+				if m.rightScroll == 0 {
+					break
+				}
+
 				m.rightScroll--
 			}
 

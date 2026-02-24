@@ -9,6 +9,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/radeqq007/duvet/internal/icons"
 )
 
 type fileNode struct {
@@ -85,9 +86,11 @@ func (m model) View() string {
 	for i := start; i < end; i++ {
 		node := m.fileTree[i]
 
-		icon := "📄"
+		var icon string
 		if node.isDir {
-			icon = "📁"
+			icon = "\uf4d3"
+		} else {
+			icon = icons.GetIcon(filepath.Ext(node.name))
 		}
 
 		line := fmt.Sprintf("%s %s", icon, node.name)

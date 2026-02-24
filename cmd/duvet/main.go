@@ -19,14 +19,16 @@ type fileNode struct {
 
 type model struct {
 	fileTree   []fileNode
-	cursor     int
-	scroll     int
-	width      int
-	height     int
-	leftPaneW  int
-	rightPaneW int
-	curPath    string
-	parentDir  string
+	cursor      int
+	focus       int // left / right
+	leftScroll  int
+	rightScroll int
+	width       int
+	height      int
+	leftPaneW   int
+	rightPaneW  int
+	curPath     string
+	parentDir   string
 }
 
 type fileClosed struct{ err error }
@@ -35,6 +37,10 @@ var (
 	paneStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color("62"))
+
+	focusedPaneStyle = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(lipgloss.Color("201"))
 
 	selectedStyle = lipgloss.NewStyle().
 			Background(lipgloss.Color("62")).
@@ -62,12 +68,15 @@ func initialModel() model {
 	}
 
 	return model{
-		fileTree:   files,
-		cursor:     0,
-		leftPaneW:  40,
-		rightPaneW: 40,
-		curPath:    dir,
-		parentDir:  filepath.Dir(dir),
+		fileTree:    files,
+		cursor:      0,
+		leftScroll:  0,
+		rightScroll: 0,
+		focus:       0,
+		leftPaneW:   40,
+		rightPaneW:  40,
+		curPath:     dir,
+		parentDir:   filepath.Dir(dir),
 	}
 }
 
@@ -79,8 +88,8 @@ func (m model) View() string {
 	var leftContent strings.Builder
 	visibleHeight := m.height - 4
 
-	start := m.scroll
-	end := m.scroll + visibleHeight
+	start := m.leftScroll
+	end := m.leftScroll + visibleHeight
 	end = min(end, len(m.fileTree))
 
 	for i := start; i < end; i++ {
@@ -110,10 +119,18 @@ func (m model) View() string {
 		leftContent.WriteByte('\n')
 	}
 
-	leftPane := paneStyle.
-		Width(m.leftPaneW).
-		Height(m.height - 2).
-		Render(leftContent.String())
+	var leftPane string
+	if m.focus == 0 {
+		leftPane = focusedPaneStyle.
+				Width(m.leftPaneW).
+				Height(m.height - 2).
+				Render(leftContent.String())
+	} else {
+		leftPane = paneStyle.
+			Width(m.leftPaneW).
+			Height(m.height - 2).
+			Render(leftContent.String())
+	}
 
 	var rightContent strings.Builder
 	if !m.fileTree[m.cursor].isDir {
@@ -121,8 +138,8 @@ func (m model) View() string {
 		content, _ := readFileContent(file)
 
 		lines := strings.Split(content, "\n")
-		i := 0
-		for i < min(visibleHeight, len(lines)) {
+		i := m.rightScroll
+		for i < min(visibleHeight + m.rightScroll, len(lines)) {
 			_, _ = rightContent.WriteString(lines[i] + "\n")
 			if len(lines[i]) > m.rightPaneW {
 				i++
@@ -136,10 +153,18 @@ func (m model) View() string {
 		}
 	}
 
-	rightPane := paneStyle.
-		Width(m.rightPaneW).
-		Height(m.height - 2).
-		Render(rightContent.String())
+	var rightPane string
+	if m.focus == 1 {
+		rightPane = focusedPaneStyle.
+			Width(m.rightPaneW).
+			Height(m.height - 2).
+			Render(rightContent.String())
+	}  else {
+		rightPane = paneStyle.
+			Width(m.rightPaneW).
+			Height(m.height - 2).
+			Render(rightContent.String())
+	}
 
 	view := lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
 
@@ -154,22 +179,26 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "up", "k":
-			if m.cursor > 0 {
+			if m.focus == 0 && m.cursor > 0 {
 				m.cursor--
 
-				if m.cursor < m.scroll {
-					m.scroll = m.cursor
+				if m.cursor < m.leftScroll {
+					m.leftScroll = m.cursor
 				}
+			} else {
+				m.rightScroll--
 			}
 
 		case "down", "j":
-			if m.cursor < len(m.fileTree)-1 {
+			if m.focus == 0 && m.cursor < len(m.fileTree)-1 {
 				m.cursor++
-
+	
 				visibleHeight := m.height - 4
-				if m.cursor >= m.scroll+visibleHeight {
-					m.scroll = m.cursor - visibleHeight + 1
+				if m.cursor >= m.leftScroll+visibleHeight {
+					m.leftScroll = m.cursor - visibleHeight + 1
 				}
+			} else {
+				m.rightScroll++
 			}
 
 		case "left", "h":
@@ -179,6 +208,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.parentDir = filepath.Dir(m.curPath)
 				m.fileTree = files
 				m.cursor = 0
+			}
+
+		case "ctrl+right":
+			if m.focus == 0 {
+				m.focus = 1
+			}
+
+		case "ctrl+left":
+			if m.focus == 1 {
+				m.focus = 0
 			}
 
 		case "enter", "l", "right":
@@ -191,7 +230,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.curPath = newPath
 					m.fileTree = files
 					m.cursor = 0
-					m.scroll = 0
+					m.leftScroll = 0
 				}
 			} else {
 				return m, openFile(newPath)

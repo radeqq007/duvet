@@ -10,6 +10,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/radeqq007/duvet/internal/icons"
+	"github.com/radeqq007/duvet/internal/pane"
 )
 
 type fileNode struct {
@@ -20,7 +21,7 @@ type fileNode struct {
 type model struct {
 	fileTree   []fileNode
 	cursor      int
-	focus       int // left / right
+	focus       pane.Pane
 	leftScroll  int
 	rightScroll int
 	width       int
@@ -120,7 +121,7 @@ func (m model) View() string {
 	}
 
 	var leftPane string
-	if m.focus == 0 {
+	if m.focus == pane.LeftPane {
 		leftPane = focusedPaneStyle.
 				Width(m.leftPaneW).
 				Height(m.height - 2).
@@ -154,7 +155,7 @@ func (m model) View() string {
 	}
 
 	var rightPane string
-	if m.focus == 1 {
+	if m.focus == pane.RightPane {
 		rightPane = focusedPaneStyle.
 			Width(m.rightPaneW).
 			Height(m.height - 2).
@@ -179,7 +180,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "up", "k":
-			if m.focus == 0 && m.cursor > 0 {
+			if m.focus == pane.LeftPane && m.cursor > 0 {
 				m.cursor--
 
 				if m.cursor < m.leftScroll {
@@ -194,7 +195,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "down", "j":
-			if m.focus == 0 && m.cursor < len(m.fileTree)-1 {
+			if m.focus == pane.LeftPane && m.cursor < len(m.fileTree)-1 {
 				m.cursor++
 	
 				visibleHeight := m.height - 4
@@ -215,12 +216,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "ctrl+right":
-			if m.focus == 0 {
+			if m.focus == pane.LeftPane {
 				m.focus = 1
 			}
 
 		case "ctrl+left":
-			if m.focus == 1 {
+			if m.focus == pane.RightPane {
 				m.focus = 0
 			}
 

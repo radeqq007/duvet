@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -26,6 +27,8 @@ type model struct {
 	curPath    string
 	parentDir  string
 }
+
+type fileClosed struct{ err error }
 
 var (
 	paneStyle = lipgloss.NewStyle().
@@ -173,16 +176,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "enter", "l", "right":
-			newPath := filepath.Join(m.curPath, m.fileTree[m.cursor].name)
-			files, err := getFiles(newPath)
-			if err == nil {
-				m.parentDir = m.curPath
-				m.curPath = newPath
-				m.fileTree = files
-				m.cursor = 0
-				m.scroll = 0
+			path := m.fileTree[m.cursor]
+			newPath := filepath.Join(m.curPath, path.name) 
+			if path.isDir {
+				files, err := getFiles(newPath)
+				if err == nil {
+					m.parentDir = m.curPath
+					m.curPath = newPath
+					m.fileTree = files
+					m.cursor = 0
+					m.scroll = 0
+				}
+			} else {
+				return m, openFile(newPath)
 			}
-
 		}
 
 	case tea.WindowSizeMsg:
@@ -240,6 +247,13 @@ func readFileContent(file string) (string, error) {
 
 	text := string(content)
 	return text, err
+}
+
+func openFile(filepath string) tea.Cmd {
+	c := exec.Command("nvim", filepath)
+	return tea.ExecProcess(c, func(err error) tea.Msg {
+		return fileClosed{ err }
+	})
 }
 
 func main() {

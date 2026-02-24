@@ -76,7 +76,7 @@ func (m model) View() string {
 		return "loading..."
 	}
 
-	leftContent := ""
+	var leftContent strings.Builder
 	visibleHeight := m.height - 4
 
 	start := m.scroll
@@ -103,17 +103,17 @@ func (m model) View() string {
 			line = fileStyle.Render(line)
 		}
 
-		leftContent += line + "\n"
+		_, _ = leftContent.WriteString(line + "\n")
 	}
 
 	for i := len(m.fileTree); i < visibleHeight; i++ {
-		leftContent += "\n"
+		leftContent.WriteByte('\n')
 	}
 
 	leftPane := paneStyle.
 		Width(m.leftPaneW).
 		Height(m.height - 2).
-		Render(leftContent)
+		Render(leftContent.String())
 
 	var rightContent strings.Builder
 	if !m.fileTree[m.cursor].isDir {

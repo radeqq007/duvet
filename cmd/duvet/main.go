@@ -8,11 +8,6 @@ import (
 	"github.com/radeqq007/duvet/internal/model"
 )
 
-type fileNode struct {
-	name  string
-	isDir bool
-}
-
 func main() {
 	p := tea.NewProgram(model.New(), tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {

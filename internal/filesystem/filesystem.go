@@ -65,10 +65,3 @@ func IsBinary(content []byte) bool {
 	}
 	return false
 }
-
-// func openFile(filepath string) tea.Cmd {
-// 	c := exec.Command("nvim", filepath)
-// 	return tea.ExecProcess(c, func(err error) tea.Msg {
-// 		return fileClosed{err}
-// 	})
-// }

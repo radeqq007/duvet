@@ -15,10 +15,8 @@ type ColorsConfig struct {
 	DirFG             string
 	FileFG            string
 	CmdBoxFG          string
-	CmdBoxBG          string
 	CmdBoxBorder      string
 	AlertFG           string
-	AlertBG           string
 	AlertBorder       string
 	ErrorFG           string
 	ErrorBG           string
@@ -40,9 +38,7 @@ var Colors = ColorsConfig{
 	DirFG:             "39",
 	FileFG:            "252",
 	CmdBoxFG:          "230",
-	CmdBoxBG:          "230",
 	CmdBoxBorder:      "230",
 	AlertFG:           "9",
-	AlertBG:           "9",
 	AlertBorder:       "9",
 }

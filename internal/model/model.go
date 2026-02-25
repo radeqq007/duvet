@@ -397,9 +397,9 @@ func (m *Model) ResetRightScroll() {
 	m.RightScroll = 0
 }
 
-func (m *Model) Alert(text string) {
+func (m *Model) Alert(text ...string) {
 	m.Mode = mode.Alert
-	m.AlertText = text
+	m.AlertText = strings.Join(text, " ")
 }
 
 func (m *Model) getCurrentFile() filesystem.FileNode {
@@ -452,7 +452,10 @@ func (m *Model) rename(args []string) (tea.Model, tea.Cmd) {
 	oldPath := filepath.Join(m.CurPath, file.Name)
 	newPath := filepath.Join(m.CurPath, args[0])
 
-	_ = os.Rename(oldPath, newPath)
+	err := os.Rename(oldPath, newPath)
+	if err != nil {
+		m.Alert("Error renaming: ", err.Error())
+	}
 
 	m.refreshFiles()
 
@@ -470,7 +473,10 @@ func (m *Model) delete(args []string) (tea.Model, tea.Cmd) {
 		path = filepath.Join(m.CurPath, file)
 	}
 
-	_ = os.RemoveAll(path)
+	err := os.RemoveAll(path)
+	if err != nil {
+		m.Alert("Error removing a file: ", err.Error())
+	}
 
 	m.refreshFiles()
 
@@ -484,7 +490,10 @@ func (m *Model) touch(args []string) (tea.Model, tea.Cmd) {
 
 	path := filepath.Join(m.CurPath, args[0])
 
-	_, _ = os.Create(path)
+	_, err := os.Create(path)
+	if err != nil {
+		m.Alert("Error creating a file: ", err.Error())
+	}
 
 	m.refreshFiles()
 
@@ -498,7 +507,10 @@ func (m *Model) mkdir(args []string) (tea.Model, tea.Cmd) {
 
 	path := filepath.Join(m.CurPath, args[0])
 
-	_ = os.Mkdir(path, os.FileMode(os.O_CREATE))
+	err := os.Mkdir(path, os.FileMode(os.O_CREATE))
+	if err != nil {
+		m.Alert("Error creating a directory: ", err.Error())
+	}
 
 	m.refreshFiles()
 

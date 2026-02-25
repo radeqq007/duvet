@@ -22,4 +22,10 @@ var (
 
 	FileStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("252"))
+
+	CmdBoxStyle = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			Padding(0, 2).
+			Width(40).
+			Foreground(lipgloss.Color("230"))
 )

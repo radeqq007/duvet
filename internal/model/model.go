@@ -12,8 +12,10 @@ import (
 	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/icons"
+	"github.com/radeqq007/duvet/internal/mode"
 	"github.com/radeqq007/duvet/internal/pane"
 	"github.com/radeqq007/duvet/internal/styles"
+	"github.com/radeqq007/duvet/internal/ui"
 )
 
 type Model struct {
@@ -28,6 +30,8 @@ type Model struct {
 	RightPaneW  int
 	CurPath     string
 	ParentDir   string
+	Mode        mode.Mode
+	CmdInput    string
 }
 
 type FileClosed struct{ Err error }
@@ -195,6 +199,16 @@ func (m Model) View() string {
 
 	view := lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
 
+	if m.Mode == mode.Command {
+		content := "$ " + m.CmdInput
+		cmdBox := styles.CmdBoxStyle.Render(content)
+
+		x := m.Width/2 - lipgloss.Width(cmdBox)/2
+		y := m.Height/2 - lipgloss.Height(cmdBox)/2
+
+		view = ui.PlaceOverlay(x, y, cmdBox, view)
+	}
+
 	return view
 }
 
@@ -202,6 +216,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
+		case ":":
+			if m.Mode == mode.Normal && msg.String() == ":" {
+				m.Mode = mode.Command
+				m.CmdInput = ""
+				return m, nil
+			}
+
 		case "ctrl+c", "q":
 			return m, tea.Quit
 

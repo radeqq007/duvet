@@ -1,26 +1,48 @@
 package config
 
-const (
-	// UI Layout
-	BorderWidth      = 2
-	HeaderFooterSize = 4
-	MinPaneWidth     = 20
+type LayoutConfig struct {
+	BorderWidth      int
+	HeaderFooterSize int
+	MinPaneWidth     int
+	DefaultPaneWidth int
+}
 
-	// File Detection
-	BinaryCheckBytes = 512
+type ColorsConfig struct {
+	PaneBorder        string
+	FocusedPaneBorder string
+	SelectedFileBG    string
+	SelectedFileFG    string
+	DirFG             string
+	FileFG            string
+	CmdBoxFG          string
+	CmdBoxBG          string
+	CmdBoxBorder      string
+	AlertFG           string
+	AlertBG           string
+	AlertBorder       string
+	ErrorFG           string
+	ErrorBG           string
+	ErrorBorder       string
+}
 
-	// Default Sizes
-	DefaultPaneWidth = 40
+var Layout = LayoutConfig{
+	BorderWidth:      2,
+	HeaderFooterSize: 4,
+	MinPaneWidth:     20,
+	DefaultPaneWidth: 40,
+}
 
-	// Colors
-	PaneBorderColor        = "62"
-	FocusedPaneBorderColor = "201"
-	SelectedFileBackground = "62"
-	SelectedFileForeground = "230"
-	DirForeground          = "39"
-	FileForeground         = "252"
-	CmdBoxForeground       = "230"
-	CmdBoxBorderColor      = "230"
-	AlertBoxForeground     = "9"
-	AlertBoxBorderColor    = "9"
-)
+var Colors = ColorsConfig{
+	PaneBorder:        "62",
+	FocusedPaneBorder: "201",
+	SelectedFileBG:    "62",
+	SelectedFileFG:    "230",
+	DirFG:             "39",
+	FileFG:            "252",
+	CmdBoxFG:          "230",
+	CmdBoxBG:          "230",
+	CmdBoxBorder:      "230",
+	AlertFG:           "9",
+	AlertBG:           "9",
+	AlertBorder:       "9",
+}

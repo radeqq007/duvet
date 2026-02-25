@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-
-	"github.com/radeqq007/duvet/internal/config"
 )
 
 type FileNode struct {
@@ -56,7 +54,8 @@ func ParentDir(path string) string {
 }
 
 func IsBinary(content []byte) bool {
-	checkLen := min(config.BinaryCheckBytes, len(content))
+	checkBytes := 512
+	checkLen := min(checkBytes, len(content))
 
 	for i := range checkLen {
 		if content[i] == 0 {

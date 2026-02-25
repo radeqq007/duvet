@@ -64,7 +64,7 @@ func New() Model {
 }
 
 func (m Model) VisibleHeight() int {
-	return m.Height - config.HeaderFooterSize
+	return m.Height - config.Layout.HeaderFooterSize
 }
 
 func (m Model) CurrentFile() filesystem.FileNode {
@@ -379,8 +379,8 @@ func (m *Model) NavigateInto() error {
 func (m *Model) UpdateDimensions(width, height int) {
 	m.Width = width
 	m.Height = height
-	m.LeftPaneW = width/2 - config.BorderWidth
-	m.RightPaneW = width/2 - config.BorderWidth
+	m.LeftPaneW = width/2 - config.Layout.BorderWidth
+	m.RightPaneW = width/2 - config.Layout.BorderWidth
 }
 
 func (m *Model) ScrollRightUp() {

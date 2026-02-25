@@ -8,35 +8,35 @@ import (
 var (
 	PaneStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color(config.PaneBorderColor))
+			BorderForeground(lipgloss.Color(config.Colors.PaneBorder))
 
 	FocusedPaneStyle = lipgloss.NewStyle().
 				Border(lipgloss.RoundedBorder()).
-				BorderForeground(lipgloss.Color(config.FocusedPaneBorderColor))
+				BorderForeground(lipgloss.Color(config.Colors.FocusedPaneBorder))
 
 	SelectedStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color(config.SelectedFileBackground)).
-			Foreground(lipgloss.Color(config.SelectedFileForeground)).
+			Background(lipgloss.Color(config.Colors.SelectedFileBG)).
+			Foreground(lipgloss.Color(config.Colors.SelectedFileFG)).
 			Bold(true)
 
 	DirStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(config.DirForeground)).
+			Foreground(lipgloss.Color(config.Colors.DirFG)).
 			Bold(true)
 
 	FileStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(config.FileForeground))
+			Foreground(lipgloss.Color(config.Colors.FileFG))
 
 	CmdBoxStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			Padding(0, 1).
 			Width(40).
-			BorderForeground(lipgloss.Color(config.CmdBoxBorderColor)).
-			Foreground(lipgloss.Color(config.CmdBoxForeground))
+			BorderForeground(lipgloss.Color(config.Colors.CmdBoxBorder)).
+			Foreground(lipgloss.Color(config.Colors.CmdBoxFG))
 
 	AlertBoxStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			Padding(1, 4).
 			Width(40).
-			BorderForeground(lipgloss.Color(config.AlertBoxBorderColor)).
-			Foreground(lipgloss.Color(config.AlertBoxForeground))
+			BorderForeground(lipgloss.Color(config.Colors.AlertBorder)).
+			Foreground(lipgloss.Color(config.Colors.AlertFG))
 )

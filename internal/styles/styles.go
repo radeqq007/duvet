@@ -30,5 +30,13 @@ var (
 			Border(lipgloss.RoundedBorder()).
 			Padding(0, 1).
 			Width(40).
+			BorderForeground(lipgloss.Color(config.CmdBoxBorderColor)).
 			Foreground(lipgloss.Color(config.CmdBoxForeground))
+
+	AlertBoxStyle = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			Padding(1, 4).
+			Width(40).
+			BorderForeground(lipgloss.Color(config.AlertBoxBorderColor)).
+			Foreground(lipgloss.Color(config.AlertBoxForeground))
 )

@@ -20,4 +20,7 @@ const (
 	DirForeground          = "39"
 	FileForeground         = "252"
 	CmdBoxForeground       = "230"
+	CmdBoxBorderColor      = "230"
+	AlertBoxForeground     = "9"
+	AlertBoxBorderColor    = "9"
 )

@@ -33,6 +33,7 @@ type Model struct {
 	ParentDir   string
 	Mode        mode.Mode
 	CmdInput    string
+	AlertText   string
 }
 
 type FileClosed struct{ Err error }
@@ -200,7 +201,8 @@ func (m Model) View() string {
 
 	view := lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
 
-	if m.Mode == mode.Command {
+	switch m.Mode {
+	case mode.Command:
 		content := ":" + m.CmdInput
 		cmdBox := styles.CmdBoxStyle.Render(content)
 
@@ -208,18 +210,30 @@ func (m Model) View() string {
 		y := m.Height/2 - lipgloss.Height(cmdBox)/2
 
 		view = ui.PlaceOverlay(x, y, cmdBox, view)
+
+	case mode.Alert:
+		alertBox := styles.AlertBoxStyle.Render(m.AlertText)
+
+		x := m.Width/2 - lipgloss.Width(alertBox)/2
+		y := m.Height/2 - lipgloss.Height(alertBox)/2
+
+		view = ui.PlaceOverlay(x, y, alertBox, view)
 	}
 
 	return view
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if m.Mode == mode.Normal {
+	switch m.Mode {
+	case mode.Normal:
 		return m.handleNormalModeUpdate(msg)
-	} else {
+	case mode.Command:
 		return m.handleCommandModeUpdate(msg)
 	}
 
+	m.Mode = mode.Normal
+
+	return m, nil
 }
 
 func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -383,6 +397,11 @@ func (m *Model) ResetRightScroll() {
 	m.RightScroll = 0
 }
 
+func (m *Model) Alert(text string) {
+	m.Mode = mode.Alert
+	m.AlertText = text
+}
+
 func (m *Model) getCurrentFile() filesystem.FileNode {
 	return m.FileTree[m.Cursor]
 }
@@ -414,6 +433,9 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 
 	case "cd":
 		return m.cd(msg.Args)
+
+	case "alert":
+		return m.alertCommand(msg.Args)
 
 	}
 
@@ -517,5 +539,10 @@ func (m *Model) cd(args []string) (tea.Model, tea.Cmd) {
 
 	m.refreshFiles()
 
+	return m, nil
+}
+
+func (m *Model) alertCommand(args []string) (tea.Model, tea.Cmd) {
+	m.Alert(strings.Join(args, ""))
 	return m, nil
 }

@@ -9,6 +9,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/radeqq007/duvet/internal/command"
 	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/icons"
@@ -213,6 +214,15 @@ func (m Model) View() string {
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if m.Mode == mode.Normal {
+		return m.handleNormalModeUpdate(msg)
+	} else {
+		return m.handleCommandModeUpdate(msg)
+	}
+
+}
+
+func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -223,7 +233,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 
-		case "ctrl+c", "q":
+		case "ctrl+c":
 			return m, tea.Quit
 
 		case "up", "k":
@@ -294,6 +304,33 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.Height = msg.Height
 		m.LeftPaneW = msg.Width/2 - 2
 		m.RightPaneW = msg.Width/2 - 2
+	}
+
+	return m, nil
+}
+
+func (m Model) handleCommandModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(tea.KeyMsg).String(); msg {
+	case "esc":
+		m.Mode = mode.Normal
+		m.CmdInput = ""
+
+	case "enter":
+		m.Mode = mode.Normal
+		inp := strings.Split(m.CmdInput, " ")
+		if len(inp) < 1 {
+			return m, nil
+		}
+
+		return m, command.Exec(inp[0], inp[1:]...)
+
+	case "backspace":
+		if len(m.CmdInput) >= 1 {
+			m.CmdInput = m.CmdInput[:len(m.CmdInput)-1]
+		}
+
+	default:
+		m.CmdInput += msg
 	}
 
 	return m, nil

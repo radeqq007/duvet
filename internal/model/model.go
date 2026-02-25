@@ -304,6 +304,9 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.Height = msg.Height
 		m.LeftPaneW = msg.Width/2 - 2
 		m.RightPaneW = msg.Width/2 - 2
+
+	case command.Msg:
+		return m.handleCommand(msg)
 	}
 
 	return m, nil
@@ -317,12 +320,7 @@ func (m Model) handleCommandModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case "enter":
 		m.Mode = mode.Normal
-		inp := strings.Split(m.CmdInput, " ")
-		if len(inp) < 1 {
-			return m, nil
-		}
-
-		return m, command.Exec(inp[0], inp[1:]...)
+		return m, command.Exec(m.CmdInput)
 
 	case "backspace":
 		if len(m.CmdInput) >= 1 {
@@ -383,4 +381,141 @@ func (m *Model) ScrollRightDown() {
 
 func (m *Model) ResetRightScroll() {
 	m.RightScroll = 0
+}
+
+func (m *Model) getCurrentFile() filesystem.FileNode {
+	return m.FileTree[m.Cursor]
+}
+
+func (m *Model) refreshFiles() {
+	files, err := filesystem.GetFiles(m.CurPath)
+	if err == nil {
+		m.FileTree = files
+	}
+}
+
+func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
+	switch msg.Name {
+
+	case "q", "quit":
+		return m, tea.Quit
+
+	case "rename":
+		return m.rename(msg.Args)
+
+	case "delete":
+		return m.delete(msg.Args)
+
+	case "touch":
+		return m.touch(msg.Args)
+
+	case "mkdir":
+		return m.mkdir(msg.Args)
+
+	case "cd":
+		return m.cd(msg.Args)
+
+	}
+
+	return m, nil
+}
+
+func (m *Model) rename(args []string) (tea.Model, tea.Cmd) {
+	file := m.getCurrentFile()
+
+	if len(args) < 1 {
+		return m, nil
+	}
+
+	oldPath := filepath.Join(m.CurPath, file.Name)
+	newPath := filepath.Join(m.CurPath, args[0])
+
+	_ = os.Rename(oldPath, newPath)
+
+	m.refreshFiles()
+
+	return m, nil
+}
+
+func (m *Model) delete(args []string) (tea.Model, tea.Cmd) {
+	var file string
+	var path string
+	if len(args) < 1 {
+		file = m.getCurrentFile().Name
+		path = filepath.Join(m.CurPath, file)
+	} else {
+		file = args[0]
+		path = filepath.Join(m.CurPath, file)
+	}
+
+	_ = os.RemoveAll(path)
+
+	m.refreshFiles()
+
+	return m, nil
+}
+
+func (m *Model) touch(args []string) (tea.Model, tea.Cmd) {
+	if len(args) < 1 {
+		return m, nil
+	}
+
+	path := filepath.Join(m.CurPath, args[0])
+
+	_, _ = os.Create(path)
+
+	m.refreshFiles()
+
+	return m, nil
+}
+
+func (m *Model) mkdir(args []string) (tea.Model, tea.Cmd) {
+	if len(args) < 1 {
+		return m, nil
+	}
+
+	path := filepath.Join(m.CurPath, args[0])
+
+	_ = os.Mkdir(path, os.FileMode(os.O_CREATE))
+
+	m.refreshFiles()
+
+	return m, nil
+}
+
+func (m *Model) cd(args []string) (tea.Model, tea.Cmd) {
+	m.LeftScroll = 0
+	m.RightScroll = 0
+	m.Cursor = 0
+
+	var target string
+
+	if len(args) == 0 {
+		home, _ := os.UserHomeDir()
+		target = home
+	} else {
+		target = args[0]
+
+		if strings.HasPrefix(target, "~") {
+			home, _ := os.UserHomeDir()
+
+			target = filepath.Join(home, strings.TrimPrefix(target, "~"))
+		}
+
+		if !filepath.IsAbs(target) {
+			target = filepath.Join(m.CurPath, target)
+		}
+	}
+
+	target = filepath.Clean(target)
+	info, err := os.Stat(target)
+	if err != nil || !info.IsDir() {
+		return m, nil
+	}
+
+	m.CurPath = target
+
+	m.refreshFiles()
+
+	return m, nil
 }

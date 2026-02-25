@@ -11,4 +11,13 @@ const (
 
 	// Default Sizes
 	DefaultPaneWidth = 40
+
+	// Colors
+	PaneBorderColor        = "62"
+	FocusedPaneBorderColor = "201"
+	SelectedFileBackground = "62"
+	SelectedFileForeground = "230"
+	DirForeground          = "39"
+	FileForeground         = "252"
+	CmdBoxForeground       = "230"
 )

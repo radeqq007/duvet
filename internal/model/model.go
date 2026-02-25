@@ -201,7 +201,7 @@ func (m Model) View() string {
 	view := lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
 
 	if m.Mode == mode.Command {
-		content := "$ " + m.CmdInput
+		content := ":" + m.CmdInput
 		cmdBox := styles.CmdBoxStyle.Render(content)
 
 		x := m.Width/2 - lipgloss.Width(cmdBox)/2

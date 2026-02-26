@@ -44,6 +44,8 @@ func New() Model {
 		files = []filesystem.FileNode{}
 	}
 
+	config.Load()
+
 	return Model{
 		FileTree:    files,
 		Cursor:      0,

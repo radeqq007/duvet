@@ -4,11 +4,12 @@ import (
 	"os/exec"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 )
 
 func openFile(filepath string) tea.Cmd {
-	c := exec.Command("nvim", filepath)
+	c := exec.Command(config.DefaultEditor, filepath)
 	return tea.ExecProcess(c, func(err error) tea.Msg {
 		return FileClosed{Err: err}
 	})

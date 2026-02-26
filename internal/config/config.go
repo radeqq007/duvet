@@ -8,7 +8,8 @@ import (
 )
 
 type fileConfig struct {
-	Colors ColorsConfig `toml:"colors"`
+	Colors        ColorsConfig `toml:"colors"`
+	DefaultEditor string       `toml:"default_editor"`
 }
 
 type LayoutConfig struct {
@@ -66,6 +67,8 @@ var Colors = ColorsConfig{
 	AlertWarningBorder: "220",
 }
 
+var DefaultEditor = "nvim"
+
 func Load() error {
 	configDir, _ := os.UserConfigDir()
 	configPath := filepath.Join(configDir, "duvet", "config.toml")
@@ -80,11 +83,14 @@ func Load() error {
 
 	var fc fileConfig
 	fc.Colors = Colors
+	fc.DefaultEditor = DefaultEditor
+
 	if err := toml.Unmarshal(data, &fc); err != nil {
 		return err
 	}
 
 	Colors = fc.Colors
+	DefaultEditor = fc.DefaultEditor
 
 	return nil
 }

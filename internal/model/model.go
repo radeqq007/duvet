@@ -184,6 +184,11 @@ func (m Model) View() string {
     for i := start; i < end; i++ {
         rightContent.WriteString(visualLines[i] + "\n")
     }
+
+		linesRendered := end - start
+    for i := linesRendered; i < visibleHeight; i++ {
+        rightContent.WriteByte('\n')
+    }
 	} else {
 		for range visibleHeight {
 			_ = rightContent.WriteByte('\n')

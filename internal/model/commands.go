@@ -33,7 +33,7 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 
 	case "alert":
 		return m.alertCommand(msg.Args)
-		
+
 	case "bm":
 		return m.bookmark(msg.Args)
 	}
@@ -152,7 +152,6 @@ func (m *Model) cd(args []string) (tea.Model, tea.Cmd) {
 
 	return m, nil
 }
-
 
 func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 	switch args[0] {

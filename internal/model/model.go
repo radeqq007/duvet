@@ -173,22 +173,22 @@ func (m Model) View() string {
 		content, _ := filesystem.ReadFileContent(file)
 
 		wrapped := lipgloss.NewStyle().
-        Width(m.RightPaneW - 2).
-        Render(content)
+			Width(m.RightPaneW - 2).
+			Render(content)
 
 		visualLines := strings.Split(wrapped, "\n")
 
-    start := m.RightScroll
-    end := min(start+visibleHeight, len(visualLines))
+		start := m.RightScroll
+		end := min(start+visibleHeight, len(visualLines))
 
-    for i := start; i < end; i++ {
-        rightContent.WriteString(visualLines[i] + "\n")
-    }
+		for i := start; i < end; i++ {
+			rightContent.WriteString(visualLines[i] + "\n")
+		}
 
 		linesRendered := end - start
-    for i := linesRendered; i < visibleHeight; i++ {
-        rightContent.WriteByte('\n')
-    }
+		for i := linesRendered; i < visibleHeight; i++ {
+			rightContent.WriteByte('\n')
+		}
 	} else {
 		for range visibleHeight {
 			_ = rightContent.WriteByte('\n')
@@ -325,8 +325,8 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.Width = msg.Width
 		m.Height = msg.Height
-		m.LeftPaneW = msg.Width/2
-		m.RightPaneW = msg.Width/2
+		m.LeftPaneW = msg.Width / 2
+		m.RightPaneW = msg.Width / 2
 
 	case command.Msg:
 		return m.handleCommand(msg)

@@ -15,3 +15,6 @@ To open the command prompt press `:`
 - `mkdir <directory name>` - create a new directory
 - `cd` - change directory
 - `alert` - open the alert box
+- `bm save <name>` - save the current path as a bookmark
+- `bm load <name>` - load a bookmark
+- `bm list` - list all saved bookmarks

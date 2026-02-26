@@ -2,6 +2,7 @@ package model
 
 import (
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/radeqq007/duvet/internal/alert"
@@ -40,4 +41,15 @@ func (m *Model) ShowAlert(alertType alert.AlertType, text ...string) {
 	m.Alert.Type = alertType
 	m.Alert.Text = strings.Join(text, " ")
 	m.Mode = mode.Alert
+}
+
+func isMediaFile(path string) bool {
+	mediaExtensions := []string{
+		".jpg", ".jpeg", ".png", ".gif",
+		".bmp", ".webp", ".svg", ".mp4",
+		".mkv", ".avi", ".mov", ".mp3",
+		".flac", ".wav", ".ogg", ".pdf",
+	}
+
+	return slices.Contains(mediaExtensions, strings.ToLower(filepath.Ext(path)))
 }

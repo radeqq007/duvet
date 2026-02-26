@@ -2,17 +2,40 @@ package model
 
 import (
 	"os/exec"
+	"runtime"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 )
 
-func openFile(filepath string) tea.Cmd {
-	c := exec.Command(config.DefaultEditor, filepath)
+func openFile(path string) tea.Cmd {
+
+	if isMediaFile(path) {
+		return openWithSystem(path)
+	}
+
+	c := exec.Command(config.DefaultEditor, path)
 	return tea.ExecProcess(c, func(err error) tea.Msg {
 		return FileClosed{Err: err}
 	})
+}
+
+func openWithSystem(path string) tea.Cmd {
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", path)
+	case "windows":
+		cmd = exec.Command("cmd", "/C", "start", "", path)
+	default: // linux, bsd, etc.
+		cmd = exec.Command("xdg-open", path)
+	}
+
+	return func() tea.Msg {
+		err := cmd.Start()
+		return FileClosed{Err: err}
+	}
 }
 
 func (m Model) NavigateUp() {

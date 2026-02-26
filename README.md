@@ -14,8 +14,9 @@ To open the command prompt press `:`
 - `touch <file name>` - create a new file
 - `mkdir <directory name>` - create a new directory
 - `cd` - change directory
-- `alert` - open the alert box
 - `bm save <name>` - save the current path as a bookmark
 - `bm remove <name>` - remove a bookmark
 - `bm load <name>` - load a bookmark
 - `bm list` - list all saved bookmarks
+- `alert <type> <text>` - open the alert box (possible types: `normal`, `info`, `warning`, `error`)
+- `alert <text>` - open the alert box, with the default type `normal`

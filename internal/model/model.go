@@ -172,16 +172,18 @@ func (m Model) View() string {
 		file := filepath.Join(m.CurPath, m.FileTree[m.Cursor].Name)
 		content, _ := filesystem.ReadFileContent(file)
 
-		lines := strings.Split(content, "\n")
-		i := m.RightScroll
-		for i < min(visibleHeight+m.RightScroll, len(lines)) {
-			_, _ = rightContent.WriteString(lines[i] + "\n")
-			if len(lines[i]) > m.RightPaneW {
-				i++
-			}
+		wrapped := lipgloss.NewStyle().
+        Width(m.RightPaneW - 2).
+        Render(content)
 
-			i++
-		}
+		visualLines := strings.Split(wrapped, "\n")
+
+    start := m.RightScroll
+    end := min(start+visibleHeight, len(visualLines))
+
+    for i := start; i < end; i++ {
+        rightContent.WriteString(visualLines[i] + "\n")
+    }
 	} else {
 		for range visibleHeight {
 			_ = rightContent.WriteByte('\n')

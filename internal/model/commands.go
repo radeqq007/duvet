@@ -184,6 +184,14 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 			fmt.Fprintf(&text, "%s: %s\n", name, path)
 		}
 		m.Alert(text.String())
+
+	case "remove":
+		if len(args) < 2 {
+			return m, nil
+		}
+
+		name := args[1]
+		delete(m.Bookmarks, name)
 	}
 
 	return m, nil

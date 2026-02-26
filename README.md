@@ -16,5 +16,6 @@ To open the command prompt press `:`
 - `cd` - change directory
 - `alert` - open the alert box
 - `bm save <name>` - save the current path as a bookmark
+- `bm remove <name>` - remove a bookmark
 - `bm load <name>` - load a bookmark
 - `bm list` - list all saved bookmarks

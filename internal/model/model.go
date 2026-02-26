@@ -56,8 +56,8 @@ func New() Model {
 		LeftScroll:  0,
 		RightScroll: 0,
 		Focus:       0,
-		LeftPaneW:   40,
-		RightPaneW:  40,
+		LeftPaneW:   config.Layout.DefaultPaneWidth,
+		RightPaneW:  config.Layout.DefaultPaneWidth,
 		CurPath:     dir,
 		ParentDir:   filepath.Dir(dir),
 	}
@@ -138,7 +138,7 @@ func (m Model) View() string {
 		line := fmt.Sprintf("%s %s", icon, node.Name)
 
 		if i == m.Cursor {
-			line = styles.SelectedStyle.Width(m.LeftPaneW - 2).Render(line)
+			line = styles.SelectedStyle.Width(m.LeftPaneW).Render(line)
 		} else if node.IsDir {
 			line = styles.DirStyle.Render(line)
 		} else {
@@ -316,8 +316,8 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.Width = msg.Width
 		m.Height = msg.Height
-		m.LeftPaneW = msg.Width/2 - 2
-		m.RightPaneW = msg.Width/2 - 2
+		m.LeftPaneW = msg.Width/2
+		m.RightPaneW = msg.Width/2
 
 	case command.Msg:
 		return m.handleCommand(msg)

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -32,7 +33,9 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 
 	case "alert":
 		return m.alertCommand(msg.Args)
-
+		
+	case "bm":
+		return m.bookmark(msg.Args)
 	}
 
 	return m, nil
@@ -146,6 +149,42 @@ func (m *Model) cd(args []string) (tea.Model, tea.Cmd) {
 	m.CurPath = target
 
 	m.refreshFiles()
+
+	return m, nil
+}
+
+
+func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
+	switch args[0] {
+	case "save":
+		if len(args) < 2 {
+			return m, nil
+		}
+
+		name := args[1]
+		m.Bookmarks[name] = m.CurPath
+
+	case "load":
+		if len(args) < 2 {
+			return m, nil
+		}
+
+		name := args[1]
+		if path, ok := m.Bookmarks[name]; ok {
+			m.CurPath = path
+			m.refreshFiles()
+		} else {
+			m.Alert("No bookmark", name, "found.")
+		}
+
+	case "list":
+		var text strings.Builder
+		text.WriteString("Bookmark list:\n")
+		for name, path := range m.Bookmarks {
+			fmt.Fprintf(&text, "%s: %s\n", name, path)
+		}
+		m.Alert(text.String())
+	}
 
 	return m, nil
 }

@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/BurntSushi/toml v1.6.0
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/charmbracelet/colorprofile v0.4.2 // indirect
 	github.com/charmbracelet/ultraviolet v0.0.0-20251205161215-1948445e3318 // indirect

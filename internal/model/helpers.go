@@ -1,0 +1,43 @@
+package model
+
+import (
+	"path/filepath"
+	"strings"
+
+	"github.com/radeqq007/duvet/internal/alert"
+	"github.com/radeqq007/duvet/internal/config"
+	"github.com/radeqq007/duvet/internal/filesystem"
+	"github.com/radeqq007/duvet/internal/mode"
+)
+
+func (m Model) VisibleHeight() int {
+	return m.Height - config.Layout.HeaderFooterSize
+}
+
+func (m Model) CurrentFile() filesystem.FileNode {
+	if len(m.FileTree) == 0 {
+		return filesystem.FileNode{}
+	}
+	return m.FileTree[m.Cursor]
+}
+
+func (m Model) CurrentFilePath() string {
+	return filepath.Join(m.CurPath, m.CurrentFile().Name)
+}
+
+func (m *Model) getCurrentFile() filesystem.FileNode {
+	return m.FileTree[m.Cursor]
+}
+
+func (m *Model) refreshFiles() {
+	files, err := filesystem.GetFiles(m.CurPath)
+	if err == nil {
+		m.FileTree = files
+	}
+}
+
+func (m *Model) ShowAlert(alertType alert.AlertType, text ...string) {
+	m.Alert.Type = alertType
+	m.Alert.Text = strings.Join(text, " ")
+	m.Mode = mode.Alert
+}

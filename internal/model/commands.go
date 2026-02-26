@@ -155,6 +155,10 @@ func (m *Model) cd(args []string) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
+	if len(args) == 0 {
+		return m, nil
+	}
+
 	switch args[0] {
 	case "save":
 		if len(args) < 2 {

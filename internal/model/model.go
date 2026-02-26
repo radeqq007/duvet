@@ -34,6 +34,7 @@ type Model struct {
 	Mode        mode.Mode
 	CmdInput    string
 	AlertText   string
+	Bookmarks   map[string]string
 }
 
 type FileClosed struct{ Err error }
@@ -60,6 +61,7 @@ func New() Model {
 		RightPaneW:  config.Layout.DefaultPaneWidth,
 		CurPath:     dir,
 		ParentDir:   filepath.Dir(dir),
+		Bookmarks:   map[string]string{},
 	}
 }
 

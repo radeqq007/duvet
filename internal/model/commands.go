@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/command"
 )
 
@@ -53,7 +54,7 @@ func (m *Model) rename(args []string) (tea.Model, tea.Cmd) {
 
 	err := os.Rename(oldPath, newPath)
 	if err != nil {
-		m.Alert("Error renaming: ", err.Error())
+		m.ShowAlert(alert.Error, "Error renaming: ", err.Error())
 	}
 
 	m.refreshFiles()
@@ -74,7 +75,7 @@ func (m *Model) delete(args []string) (tea.Model, tea.Cmd) {
 
 	err := os.RemoveAll(path)
 	if err != nil {
-		m.Alert("Error removing a file: ", err.Error())
+		m.ShowAlert(alert.Error, "Error removing a file: ", err.Error())
 	}
 
 	m.refreshFiles()
@@ -91,7 +92,7 @@ func (m *Model) touch(args []string) (tea.Model, tea.Cmd) {
 
 	_, err := os.Create(path)
 	if err != nil {
-		m.Alert("Error creating a file: ", err.Error())
+		m.ShowAlert(alert.Error, "Error creating a file: ", err.Error())
 	}
 
 	m.refreshFiles()
@@ -108,7 +109,7 @@ func (m *Model) mkdir(args []string) (tea.Model, tea.Cmd) {
 
 	err := os.Mkdir(path, os.FileMode(os.O_CREATE))
 	if err != nil {
-		m.Alert("Error creating a directory: ", err.Error())
+		m.ShowAlert(alert.Error, "Error creating a directory: ", err.Error())
 	}
 
 	m.refreshFiles()
@@ -173,7 +174,7 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 			m.CurPath = path
 			m.refreshFiles()
 		} else {
-			m.Alert("No bookmark", name, "found.")
+			m.ShowAlert(alert.Error, "No bookmark", name, "found.")
 		}
 
 	case "list":
@@ -182,7 +183,7 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 		for name, path := range m.Bookmarks {
 			fmt.Fprintf(&text, "%s: %s\n", name, path)
 		}
-		m.Alert(text.String())
+		m.ShowAlert(alert.Info, text.String())
 
 	case "remove":
 		if len(args) < 2 {
@@ -197,6 +198,21 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) alertCommand(args []string) (tea.Model, tea.Cmd) {
-	m.Alert(strings.Join(args, ""))
+	if len(args) < 1 {
+		return m, nil
+	}
+	switch args[0] {
+	case "normal":
+		m.ShowAlert(alert.Normal, strings.Join(args[1:], " "))
+	case "info":
+		m.ShowAlert(alert.Info, strings.Join(args[1:], " "))
+	case "warning":
+		m.ShowAlert(alert.Warning, strings.Join(args[1:], " "))
+	case "error":
+		m.ShowAlert(alert.Error, strings.Join(args[1:], " "))
+	default:
+		m.ShowAlert(alert.Normal, strings.Join(args, " "))
+
+	}
 	return m, nil
 }

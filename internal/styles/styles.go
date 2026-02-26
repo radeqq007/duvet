@@ -36,7 +36,21 @@ var (
 	AlertBoxStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			Padding(1, 4).
-			Width(40).
-			BorderForeground(lipgloss.Color(config.Colors.AlertBorder)).
-			Foreground(lipgloss.Color(config.Colors.AlertFG))
+			Width(40)
+
+	AlertNormalStyle = AlertBoxStyle.
+				BorderForeground(lipgloss.Color(config.Colors.AlertNormalBorder)).
+				Foreground(lipgloss.Color(config.Colors.AlertNormalFG))
+
+	AlertInfoStyle = AlertBoxStyle.
+			BorderForeground(lipgloss.Color(config.Colors.AlertInfoBorder)).
+			Foreground(lipgloss.Color(config.Colors.AlertInfoFG))
+
+	AlertErrorStyle = AlertBoxStyle.
+			BorderForeground(lipgloss.Color(config.Colors.AlertErrorBorder)).
+			Foreground(lipgloss.Color(config.Colors.AlertErrorFG))
+
+	AlertWarningStyle = AlertBoxStyle.
+				BorderForeground(lipgloss.Color(config.Colors.AlertWarningBorder)).
+				Foreground(lipgloss.Color(config.Colors.AlertWarningFG))
 )

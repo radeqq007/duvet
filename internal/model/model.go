@@ -9,6 +9,7 @@ import (
 
 	"charm.land/lipgloss/v2"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/command"
 	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
@@ -33,7 +34,7 @@ type Model struct {
 	ParentDir   string
 	Mode        mode.Mode
 	CmdInput    string
-	AlertText   string
+	Alert       alert.Alert
 	Bookmarks   map[string]string
 }
 
@@ -61,7 +62,11 @@ func New() Model {
 		RightPaneW:  config.Layout.DefaultPaneWidth,
 		CurPath:     dir,
 		ParentDir:   filepath.Dir(dir),
-		Bookmarks:   map[string]string{},
+		Alert: alert.Alert{
+			Type: alert.Normal,
+			Text: "",
+		},
+		Bookmarks: map[string]string{},
 	}
 }
 
@@ -221,7 +226,17 @@ func (m Model) View() string {
 		view = ui.PlaceOverlay(x, y, cmdBox, view)
 
 	case mode.Alert:
-		alertBox := styles.AlertBoxStyle.Render(m.AlertText)
+		var alertBox string
+		switch m.Alert.Type {
+		case alert.Normal:
+			alertBox = styles.AlertNormalStyle.Render(m.Alert.Text)
+		case alert.Info:
+			alertBox = styles.AlertInfoStyle.Render(m.Alert.Text)
+		case alert.Error:
+			alertBox = styles.AlertErrorStyle.Render(m.Alert.Text)
+		case alert.Warning:
+			alertBox = styles.AlertWarningStyle.Render(m.Alert.Text)
+		}
 
 		x := m.Width/2 - lipgloss.Width(alertBox)/2
 		y := m.Height/2 - lipgloss.Height(alertBox)/2
@@ -233,11 +248,23 @@ func (m Model) View() string {
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if msg, ok := msg.(tea.WindowSizeMsg); ok {
+		m.Width = msg.Width
+		m.Height = msg.Height
+		m.LeftPaneW = msg.Width / 2
+		m.RightPaneW = msg.Width / 2
+	}
+
 	switch m.Mode {
 	case mode.Normal:
 		return m.handleNormalModeUpdate(msg)
 	case mode.Command:
 		return m.handleCommandModeUpdate(msg)
+	case mode.Alert:
+		if _, ok := msg.(tea.KeyMsg); ok {
+			m.Mode = mode.Normal
+		}
+		return m, nil
 	}
 
 	m.Mode = mode.Normal
@@ -322,12 +349,6 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 
-	case tea.WindowSizeMsg:
-		m.Width = msg.Width
-		m.Height = msg.Height
-		m.LeftPaneW = msg.Width / 2
-		m.RightPaneW = msg.Width / 2
-
 	case command.Msg:
 		return m.handleCommand(msg)
 	}
@@ -406,9 +427,10 @@ func (m *Model) ResetRightScroll() {
 	m.RightScroll = 0
 }
 
-func (m *Model) Alert(text ...string) {
+func (m *Model) ShowAlert(alertType alert.AlertType, text ...string) {
+	m.Alert.Type = alertType
+	m.Alert.Text = strings.Join(text, " ")
 	m.Mode = mode.Alert
-	m.AlertText = strings.Join(text, " ")
 }
 
 func (m *Model) getCurrentFile() filesystem.FileNode {

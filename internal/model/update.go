@@ -56,6 +56,8 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.Cursor < m.LeftScroll {
 					m.LeftScroll = m.Cursor
 				}
+				m.RightScroll = 0
+				m.updatePreview()
 			} else {
 				if m.RightScroll == 0 {
 					break
@@ -72,6 +74,8 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.Cursor >= m.LeftScroll+visibleHeight {
 					m.LeftScroll = m.Cursor - visibleHeight + 1
 				}
+				m.RightScroll = 0
+				m.updatePreview()
 			} else {
 				m.RightScroll++
 			}
@@ -83,6 +87,8 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.ParentDir = filepath.Dir(m.CurPath)
 				m.FileTree = files
 				m.Cursor = 0
+				m.RightScroll = 0
+				m.updatePreview()
 			}
 
 		case "ctrl+right":
@@ -106,6 +112,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.FileTree = files
 					m.Cursor = 0
 					m.LeftScroll = 0
+					m.updatePreview()
 				}
 			} else {
 				return m, openFile(newPath)

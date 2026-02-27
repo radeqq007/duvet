@@ -43,6 +43,34 @@ func (m *Model) ShowAlert(alertType alert.AlertType, text ...string) {
 	m.Mode = mode.Alert
 }
 
+func (m *Model) updatePreview() {
+	if len(m.FileTree) == 0 {
+		m.Preview.Path = ""
+		m.Preview.Content = ""
+		return
+	}
+
+	current := m.FileTree[m.Cursor]
+	if current.IsDir {
+		m.Preview.Path = ""
+		m.Preview.Content = ""
+		return
+	}
+
+	newPath := filepath.Join(m.CurPath, current.Name)
+	if newPath == m.Preview.Path {
+		return
+	}
+
+	content, err := filesystem.ReadFileContent(newPath)
+	if err != nil {
+		content = ""
+	}
+
+	m.Preview.Path = newPath
+	m.Preview.Content = content
+}
+
 func isMediaFile(path string) bool {
 	mediaExtensions := []string{
 		".jpg", ".jpeg", ".png", ".gif",

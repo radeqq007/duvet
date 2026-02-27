@@ -27,6 +27,12 @@ type Model struct {
 	Mode        mode.Mode
 	CmdInput    string
 	Alert       alert.Alert
+	Preview     Preview
+}
+
+type Preview struct {
+	Path    string
+	Content string
 }
 
 type FileClosed struct{ Err error }
@@ -59,6 +65,10 @@ func New() Model {
 		Alert: alert.Alert{
 			Type: alert.Normal,
 			Text: "",
+		},
+		Preview: Preview{
+			Path:    "",
+			Content: "",
 		},
 	}
 }

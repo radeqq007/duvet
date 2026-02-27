@@ -27,7 +27,6 @@ type Model struct {
 	Mode        mode.Mode
 	CmdInput    string
 	Alert       alert.Alert
-	Bookmarks   map[string]string
 }
 
 type FileClosed struct{ Err error }
@@ -45,6 +44,7 @@ func New() Model {
 	}
 
 	config.Load()
+	config.LoadBookmarks()
 
 	return Model{
 		FileTree:    files,
@@ -60,6 +60,5 @@ func New() Model {
 			Type: alert.Normal,
 			Text: "",
 		},
-		Bookmarks: map[string]string{},
 	}
 }

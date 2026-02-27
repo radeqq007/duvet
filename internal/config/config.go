@@ -70,7 +70,11 @@ var Colors = ColorsConfig{
 var DefaultEditor = "nvim"
 
 func Load() error {
-	configDir, _ := os.UserConfigDir()
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return err
+	}
+
 	configPath := filepath.Join(configDir, "duvet", "config.toml")
 	if _, err := os.Stat(configPath); err != nil && os.IsNotExist(err) {
 		return nil

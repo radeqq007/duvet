@@ -7,6 +7,18 @@
 Duvet is a terminal based file explorer with vim inspired motions and commands.
 To move around use either the arrows or the `hjkl` keys.
 
+## Installation
+
+You can install duvet by running:
+```sh
+go install github.com/radeqq007/duvet/cmd/duvet@latest
+```
+
+and you can run it with:
+```sh
+duvet
+```
+
 ## Commands
 
 To open the command prompt press `:`

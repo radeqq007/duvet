@@ -148,6 +148,7 @@ func (m *Model) cd(args []string) (tea.Model, tea.Cmd) {
 	}
 
 	m.CurPath = target
+	m.ParentDir = filepath.Dir(target)
 
 	m.refreshFiles()
 

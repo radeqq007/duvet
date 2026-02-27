@@ -1,3 +1,7 @@
+<div align="center">
+  <img src=".github/assets/logo.png" width="250" alt="Duvet logo">
+</div>
+
 # Duvet
 
 Duvet is a terminal based file explorer with vim inspired motions and commands.

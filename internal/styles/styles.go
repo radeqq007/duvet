@@ -29,7 +29,7 @@ var (
 	CmdBoxStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			Padding(0, 1).
-			Width(40).
+			Width(50).
 			BorderForeground(lipgloss.Color(config.Colors.CmdBoxBorder)).
 			Foreground(lipgloss.Color(config.Colors.CmdBoxFG))
 

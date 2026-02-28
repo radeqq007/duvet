@@ -49,25 +49,30 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "up", "k":
-			m.NavigateUp()
+			if m.Focus == pane.Left {
+				m.NavigateUp()
+			} else {
+				m.ScrollRightUp()
+			}
 
 		case "down", "j":
-			m.NavigateDown()
+			if m.Focus == pane.Left {
+				m.NavigateDown()
+			} else {
+				m.ScrollRightDown()
+			}
 
 		case "left", "h":
-			m.NavigateToParent()
-
-		case "ctrl+right":
 			if m.Focus == pane.Left {
-				m.Focus = 1
+				m.NavigateToParent()
+			} else {
+				m.Focus = pane.Left
 			}
 
-		case "ctrl+left":
-			if m.Focus == pane.Right {
-				m.Focus = 0
-			}
+		case "right", "l":
+			m.Focus = pane.Right
 
-		case "enter", "l", "right":
+		case "enter", " ":
 			path := m.FileTree[m.Cursor]
 			if path.IsDir {
 				m.NavigateInto()

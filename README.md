@@ -19,6 +19,8 @@ and you can run it with:
 duvet
 ```
 
+In order for icons to render properly you also need a **[Nerd Font](https://www.nerdfonts.com/)** installed.
+
 ## Commands
 
 To open the command prompt press `:`

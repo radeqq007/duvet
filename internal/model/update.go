@@ -5,7 +5,6 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/command"
-	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/mode"
 	"github.com/radeqq007/duvet/internal/pane"
 )
@@ -50,46 +49,13 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "up", "k":
-			if m.Focus == pane.Left && m.Cursor > 0 {
-				m.Cursor--
-
-				if m.Cursor < m.LeftScroll {
-					m.LeftScroll = m.Cursor
-				}
-				m.RightScroll = 0
-				m.updatePreview()
-			} else {
-				if m.RightScroll == 0 {
-					break
-				}
-
-				m.RightScroll--
-			}
+			m.NavigateUp()
 
 		case "down", "j":
-			if m.Focus == pane.Left && m.Cursor < len(m.FileTree)-1 {
-				m.Cursor++
-
-				visibleHeight := m.VisibleHeight()
-				if m.Cursor >= m.LeftScroll+visibleHeight {
-					m.LeftScroll = m.Cursor - visibleHeight + 1
-				}
-				m.RightScroll = 0
-				m.updatePreview()
-			} else {
-				m.RightScroll++
-			}
+			m.NavigateDown()
 
 		case "left", "h":
-			files, err := filesystem.GetFiles(m.ParentDir)
-			if err == nil {
-				m.CurPath = m.ParentDir
-				m.ParentDir = filepath.Dir(m.CurPath)
-				m.FileTree = files
-				m.Cursor = 0
-				m.RightScroll = 0
-				m.updatePreview()
-			}
+			m.NavigateToParent()
 
 		case "ctrl+right":
 			if m.Focus == pane.Left {
@@ -103,18 +69,10 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "enter", "l", "right":
 			path := m.FileTree[m.Cursor]
-			newPath := filepath.Join(m.CurPath, path.Name)
 			if path.IsDir {
-				files, err := filesystem.GetFiles(newPath)
-				if err == nil {
-					m.ParentDir = m.CurPath
-					m.CurPath = newPath
-					m.FileTree = files
-					m.Cursor = 0
-					m.LeftScroll = 0
-					m.updatePreview()
-				}
+				m.NavigateInto()
 			} else {
+				newPath := filepath.Join(m.CurPath, path.Name)
 				return m, openFile(newPath)
 			}
 		}

@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
+	"github.com/radeqq007/duvet/internal/pane"
 )
 
 func openFile(path string) tea.Cmd {
@@ -38,9 +39,14 @@ func openWithSystem(path string) tea.Cmd {
 	}
 }
 
-func (m Model) NavigateUp() {
+func (m *Model) NavigateUp() {
+	if m.Focus != pane.Left {
+		return
+	}
+
 	if m.Cursor > 0 {
 		m.Cursor--
+
 		if m.Cursor < m.LeftScroll {
 			m.LeftScroll = m.Cursor
 		}
@@ -48,6 +54,10 @@ func (m Model) NavigateUp() {
 }
 
 func (m *Model) NavigateDown() {
+	if m.Focus != pane.Left {
+		return
+	}
+
 	if m.Cursor < len(m.FileTree)-1 {
 		m.Cursor++
 		visibleHeight := m.VisibleHeight()
@@ -74,22 +84,19 @@ func (m *Model) NavigateToParent() error {
 }
 
 func (m *Model) NavigateInto() error {
-	current := m.CurrentFile()
 	newPath := m.CurrentFilePath()
 
-	if current.IsDir {
-		files, err := filesystem.GetFiles(newPath)
-		if err != nil {
-			return err
-		}
-
-		m.ParentDir = m.CurPath
-		m.CurPath = newPath
-		m.FileTree = files
-		m.Cursor = 0
-		m.LeftScroll = 0
-		m.RightScroll = 0
+	files, err := filesystem.GetFiles(newPath)
+	if err != nil {
+		return err
 	}
+
+	m.ParentDir = m.CurPath
+	m.CurPath = newPath
+	m.FileTree = files
+	m.Cursor = 0
+	m.LeftScroll = 0
+	m.RightScroll = 0
 
 	return nil
 }

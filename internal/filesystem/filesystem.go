@@ -1,9 +1,13 @@
 package filesystem
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
+
+	"github.com/alecthomas/chroma/v2/quick"
 )
 
 type FileNode struct {
@@ -63,4 +67,14 @@ func IsBinary(content []byte) bool {
 		}
 	}
 	return false
+}
+
+func Highlight(content, filename string) string {
+	var buf bytes.Buffer
+	// TODO make the highligh theme configurable
+	err := quick.Highlight(&buf, content, filename, "terminal256", "dracula")
+	if err != nil {
+		return content
+	}
+	return strings.TrimRight(buf.String(), "\n")
 }

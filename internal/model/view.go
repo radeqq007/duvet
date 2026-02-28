@@ -124,8 +124,11 @@ func (m *Model) RenderRightPane() string {
 	visibleHeight := m.VisibleHeight()
 
 	if !m.FileTree[m.Cursor].IsDir {
-		file := filepath.Join(m.CurPath, m.FileTree[m.Cursor].Name)
+		fileName := m.FileTree[m.Cursor].Name
+		file := filepath.Join(m.CurPath, fileName)
+
 		content, _ := filesystem.ReadFileContent(file)
+		content = filesystem.Highlight(content, fileName)
 
 		wrapped := lipgloss.NewStyle().
 			Width(m.Width/2 - 2).

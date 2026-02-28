@@ -10,12 +10,12 @@ require (
 	github.com/muesli/termenv v0.16.0
 )
 
-require github.com/lithammer/fuzzysearch v1.1.8
-
 require (
-	github.com/alecthomas/chroma v0.10.0 // indirect
-	github.com/dlclark/regexp2 v1.4.0 // indirect
+	github.com/alecthomas/chroma/v2 v2.23.1
+	github.com/lithammer/fuzzysearch v1.1.8
 )
+
+require github.com/dlclark/regexp2 v1.11.5 // indirect
 
 require (
 	github.com/BurntSushi/toml v1.6.0

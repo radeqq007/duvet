@@ -71,6 +71,17 @@ func (m *Model) updatePreview() {
 	m.Preview.Content = content
 }
 
+func (m *Model) getTargets() []string {
+	if len(m.Selected) > 0 {
+		paths := make([]string, 0, len(m.Selected))
+		for path := range m.Selected {
+			paths = append(paths, path)
+		}
+		return paths
+	}
+	return []string{m.CurrentFilePath()}
+}
+
 func isMediaFile(path string) bool {
 	mediaExtensions := []string{
 		".jpg", ".jpeg", ".png", ".gif",

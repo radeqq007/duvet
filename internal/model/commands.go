@@ -75,19 +75,13 @@ func (m *Model) rename(args []string) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) delete(args []string) (tea.Model, tea.Cmd) {
-	var file string
-	var path string
-	if len(args) < 1 {
-		file = m.getCurrentFile().Name
-		path = filepath.Join(m.CurPath, file)
-	} else {
-		file = args[0]
-		path = filepath.Join(m.CurPath, file)
-	}
+	files := m.getTargets()
 
-	err := os.RemoveAll(path)
-	if err != nil {
-		m.ShowAlert(alert.Error, "Error removing a file: ", err.Error())
+	for _, file := range files {
+		err := os.RemoveAll(file)
+		if err != nil {
+			m.ShowAlert(alert.Error, "Error removing a file: ", err.Error())
+		}
 	}
 
 	m.refreshFiles()

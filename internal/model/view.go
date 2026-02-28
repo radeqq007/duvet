@@ -20,7 +20,49 @@ func (m Model) View() string {
 		return "loading..."
 	}
 
+	leftPane := m.RenderLeftPane()
+	rightPane := m.RenderRightPane()
+
+	view := lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
+
+	switch m.Mode {
+	case mode.Command:
+		content := ":" + m.CmdInput
+		if strings.HasPrefix(m.CmdInput, "!") {
+			content = "$" + m.CmdInput[1:]
+		}
+		cmdBox := styles.CmdBoxStyle.Render(content)
+
+		x := m.Width/2 - lipgloss.Width(cmdBox)/2
+		y := m.Height/2 - lipgloss.Height(cmdBox)/2
+
+		view = ui.PlaceOverlay(x, y, cmdBox, view)
+
+	case mode.Alert:
+		var alertBox string
+		switch m.Alert.Type {
+		case alert.Normal:
+			alertBox = styles.AlertNormalStyle.Render(m.Alert.Text)
+		case alert.Info:
+			alertBox = styles.AlertInfoStyle.Render(m.Alert.Text)
+		case alert.Error:
+			alertBox = styles.AlertErrorStyle.Render(m.Alert.Text)
+		case alert.Warning:
+			alertBox = styles.AlertWarningStyle.Render(m.Alert.Text)
+		}
+
+		x := m.Width/2 - lipgloss.Width(alertBox)/2
+		y := m.Height/2 - lipgloss.Height(alertBox)/2
+
+		view = ui.PlaceOverlay(x, y, alertBox, view)
+	}
+
+	return view
+}
+
+func (m *Model) RenderLeftPane() string {
 	var leftContent strings.Builder
+
 	visibleHeight := m.VisibleHeight()
 
 	start := m.LeftScroll
@@ -73,7 +115,14 @@ func (m Model) View() string {
 			Render(leftContent.String())
 	}
 
+	return leftPane
+}
+
+func (m *Model) RenderRightPane() string {
 	var rightContent strings.Builder
+
+	visibleHeight := m.VisibleHeight()
+
 	if !m.FileTree[m.Cursor].IsDir {
 		file := filepath.Join(m.CurPath, m.FileTree[m.Cursor].Name)
 		content, _ := filesystem.ReadFileContent(file)
@@ -114,41 +163,7 @@ func (m Model) View() string {
 			Render(rightContent.String())
 	}
 
-	view := lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
-
-	switch m.Mode {
-	case mode.Command:
-		content := ":" + m.CmdInput
-		if strings.HasPrefix(m.CmdInput, "!") {
-			content = "$" + m.CmdInput[1:]
-		}
-		cmdBox := styles.CmdBoxStyle.Render(content)
-
-		x := m.Width/2 - lipgloss.Width(cmdBox)/2
-		y := m.Height/2 - lipgloss.Height(cmdBox)/2
-
-		view = ui.PlaceOverlay(x, y, cmdBox, view)
-
-	case mode.Alert:
-		var alertBox string
-		switch m.Alert.Type {
-		case alert.Normal:
-			alertBox = styles.AlertNormalStyle.Render(m.Alert.Text)
-		case alert.Info:
-			alertBox = styles.AlertInfoStyle.Render(m.Alert.Text)
-		case alert.Error:
-			alertBox = styles.AlertErrorStyle.Render(m.Alert.Text)
-		case alert.Warning:
-			alertBox = styles.AlertWarningStyle.Render(m.Alert.Text)
-		}
-
-		x := m.Width/2 - lipgloss.Width(alertBox)/2
-		y := m.Height/2 - lipgloss.Height(alertBox)/2
-
-		view = ui.PlaceOverlay(x, y, alertBox, view)
-	}
-
-	return view
+	return rightPane
 }
 
 func (m *Model) UpdateDimensions(width, height int) {

@@ -13,6 +13,11 @@ require (
 require github.com/lithammer/fuzzysearch v1.1.8
 
 require (
+	github.com/alecthomas/chroma v0.10.0 // indirect
+	github.com/dlclark/regexp2 v1.4.0 // indirect
+)
+
+require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/charmbracelet/colorprofile v0.4.2 // indirect

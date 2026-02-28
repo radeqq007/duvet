@@ -28,7 +28,7 @@ To open the command prompt press `:`
 - `q` - quit
 - `quit` - quit
 - `rename` - rename current file
-- `delete` - delete current file
+- `delete` - delete selected files
 - `touch <file name>` - create a new file
 - `mkdir <directory name>` - create a new directory
 - `cd` - change directory
@@ -39,7 +39,9 @@ To open the command prompt press `:`
 - `find <text>` - fuzzy match a file from current directory and jump to it
 - `alert <type> <text>` - open the alert box (possible types: `normal`, `info`, `warning`, `error`)
 - `alert <text>` - open the alert box, with the default type `normal`
-- `!<name> <args>` - executes a shell command
+- `select <pattern>` - select files that match the pattern (e.g. `:select *.py`)
+- `deselect <pattern>` - deselect files that match the pattern (e.g. `:deselect *.rs`)
+- `!<command> <args>` - executes a shell command
 
 ## Demo
 

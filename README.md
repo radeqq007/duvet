@@ -39,3 +39,7 @@ To open the command prompt press `:`
 - `alert <type> <text>` - open the alert box (possible types: `normal`, `info`, `warning`, `error`)
 - `alert <text>` - open the alert box, with the default type `normal`
 - `!<name> <args>` - executes a shell command
+
+## Demo
+
+![Demo](.github/assets/demo.gif)

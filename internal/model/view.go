@@ -114,6 +114,9 @@ func (m Model) View() string {
 	switch m.Mode {
 	case mode.Command:
 		content := ":" + m.CmdInput
+		if strings.HasPrefix(m.CmdInput, "!") {
+			content = "$" + m.CmdInput[1:]
+		}
 		cmdBox := styles.CmdBoxStyle.Render(content)
 
 		x := m.Width/2 - lipgloss.Width(cmdBox)/2

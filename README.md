@@ -5,7 +5,7 @@
 # Duvet
 
 Duvet is a terminal based file explorer with vim inspired motions and commands.
-To move around use either the arrows or the `hjkl` keys.
+
 
 ## Installation
 
@@ -21,9 +21,14 @@ duvet
 
 In order for icons to render properly you also need a **[Nerd Font](https://www.nerdfonts.com/)** installed.
 
-## Commands
+## Navigation
 
-To open the command prompt press `:`
+- `h`, `j`, `k`, `l` or the arrow keys - move around
+- `Enter` - open the directory or a file
+- `Space` - toggle selection
+- `:` - open the command prompt
+
+## Commands
 
 - `q` - quit
 - `quit` - quit

@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -38,6 +39,11 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 
 	case "bm":
 		return m.bookmark(msg.Args)
+
+	default:
+  	if strings.HasPrefix(msg.Name, "!") {
+			return m.execCommand(msg.Name[1:], msg.Args)
+    }
 	}
 
 	return m, nil
@@ -225,5 +231,28 @@ func (m *Model) alertCommand(args []string) (tea.Model, tea.Cmd) {
 		m.ShowAlert(alert.Normal, strings.Join(args, " "))
 
 	}
+	return m, nil
+}
+
+func (m *Model) execCommand(name string, args []string) (tea.Model, tea.Cmd) {
+	if name == "" {
+		return m, nil
+	}
+
+	cmd := exec.Command(name, args...)
+	cmd.Dir = m.CurPath
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		m.ShowAlert(alert.Error, "Shell error: ", err.Error())
+    return m, nil
+	}
+
+	if len(output) > 0 {
+ 		m.ShowAlert(alert.Info, string(output))
+  }
+
+  m.refreshFiles()
+
 	return m, nil
 }

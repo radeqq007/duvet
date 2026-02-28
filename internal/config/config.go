@@ -49,14 +49,14 @@ var Layout = LayoutConfig{
 }
 
 var Colors = ColorsConfig{
-	PaneBorder:         "62",
-	FocusedPaneBorder:  "201",
+	PaneBorder:         "159",
+	FocusedPaneBorder:  "153",
 	SelectedFileBG:     "62",
 	SelectedFileFG:     "230",
 	DirFG:              "39",
 	FileFG:             "252",
-	CmdBoxFG:           "230",
-	CmdBoxBorder:       "230",
+	CmdBoxFG:           "159",
+	CmdBoxBorder:       "159",
 	AlertNormalFG:      "123",
 	AlertNormalBorder:  "123",
 	AlertInfoFG:        "33",

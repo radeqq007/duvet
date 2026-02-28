@@ -5,9 +5,11 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/lithammer/fuzzysearch/fuzzy"
 	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/command"
 	"github.com/radeqq007/duvet/internal/config"
@@ -40,10 +42,13 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 	case "bm":
 		return m.bookmark(msg.Args)
 
+	case "find":
+		return m.find(msg.Args)
+
 	default:
-  	if strings.HasPrefix(msg.Name, "!") {
+		if strings.HasPrefix(msg.Name, "!") {
 			return m.execCommand(msg.Name[1:], msg.Args)
-    }
+		}
 	}
 
 	return m, nil
@@ -245,14 +250,54 @@ func (m *Model) execCommand(name string, args []string) (tea.Model, tea.Cmd) {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		m.ShowAlert(alert.Error, "Shell error: ", err.Error())
-    return m, nil
+		return m, nil
 	}
 
 	if len(output) > 0 {
- 		m.ShowAlert(alert.Info, string(output))
-  }
+		m.ShowAlert(alert.Info, string(output))
+	}
 
-  m.refreshFiles()
+	m.refreshFiles()
+
+	return m, nil
+}
+
+func (m *Model) find(args []string) (tea.Model, tea.Cmd) {
+	if len(args) < 1 {
+		return m, nil
+	}
+
+	query := strings.Join(args, " ")
+
+	names := make([]string, len(m.FileTree))
+	for i, f := range m.FileTree {
+		names[i] = f.Name
+	}
+
+	matches := fuzzy.RankFindFold(query, names)
+	if len(matches) == 0 {
+		m.ShowAlert(alert.Normal, "No match found for: "+query)
+		return m, nil
+	}
+
+	sort.Sort(matches)
+	bestMatch := matches[0].Target
+
+	for i, f := range m.FileTree {
+		if f.Name == bestMatch {
+			m.Cursor = i
+			visibleHeight := m.VisibleHeight()
+
+			if m.Cursor < m.LeftScroll {
+				m.LeftScroll = m.Cursor
+			} else if m.Cursor >= m.LeftScroll+visibleHeight {
+				m.LeftScroll = m.Cursor - visibleHeight + 1
+			}
+
+			m.updatePreview()
+			break
+		}
+	}
 
 	return m, nil
 }

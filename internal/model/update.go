@@ -13,8 +13,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.WindowSizeMsg); ok {
 		m.Width = msg.Width
 		m.Height = msg.Height
-		m.LeftPaneW = msg.Width / 2
-		m.RightPaneW = msg.Width / 2
 	}
 
 	switch m.Mode {

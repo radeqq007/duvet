@@ -20,8 +20,6 @@ type Model struct {
 	RightScroll int
 	Width       int
 	Height      int
-	LeftPaneW   int
-	RightPaneW  int
 	CurPath     string
 	ParentDir   string
 	Mode        mode.Mode
@@ -59,8 +57,6 @@ func New() Model {
 		LeftScroll:  0,
 		RightScroll: 0,
 		Focus:       0,
-		LeftPaneW:   config.Layout.DefaultPaneWidth,
-		RightPaneW:  config.Layout.DefaultPaneWidth,
 		CurPath:     dir,
 		ParentDir:   filepath.Dir(dir),
 		Alert: alert.Alert{

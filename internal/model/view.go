@@ -7,7 +7,6 @@ import (
 
 	"charm.land/lipgloss/v2"
 	"github.com/radeqq007/duvet/internal/alert"
-	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/icons"
 	"github.com/radeqq007/duvet/internal/mode"
@@ -47,7 +46,7 @@ func (m Model) View() string {
 		line := fmt.Sprintf("%s %s", icon, node.Name)
 
 		if i == m.Cursor {
-			line = styles.SelectedStyle.Width(m.LeftPaneW).Render(line)
+			line = styles.SelectedStyle.Width(m.Width / 2).Render(line)
 		} else if node.IsDir {
 			line = styles.DirStyle.Render(line)
 		} else {
@@ -64,12 +63,12 @@ func (m Model) View() string {
 	var leftPane string
 	if m.Focus == pane.Left {
 		leftPane = styles.FocusedPaneStyle.
-			Width(m.LeftPaneW).
+			Width(m.Width / 2).
 			Height(m.Height - 2).
 			Render(leftContent.String())
 	} else {
 		leftPane = styles.PaneStyle.
-			Width(m.LeftPaneW).
+			Width(m.Width / 2).
 			Height(m.Height - 2).
 			Render(leftContent.String())
 	}
@@ -80,7 +79,7 @@ func (m Model) View() string {
 		content, _ := filesystem.ReadFileContent(file)
 
 		wrapped := lipgloss.NewStyle().
-			Width(m.RightPaneW - 2).
+			Width(m.Width/2 - 2).
 			Render(content)
 
 		visualLines := strings.Split(wrapped, "\n")
@@ -105,12 +104,12 @@ func (m Model) View() string {
 	var rightPane string
 	if m.Focus == pane.Right {
 		rightPane = styles.FocusedPaneStyle.
-			Width(m.RightPaneW).
+			Width(m.Width / 2).
 			Height(m.Height - 2).
 			Render(rightContent.String())
 	} else {
 		rightPane = styles.PaneStyle.
-			Width(m.RightPaneW).
+			Width(m.Width / 2).
 			Height(m.Height - 2).
 			Render(rightContent.String())
 	}
@@ -155,6 +154,4 @@ func (m Model) View() string {
 func (m *Model) UpdateDimensions(width, height int) {
 	m.Width = width
 	m.Height = height
-	m.LeftPaneW = width/2 - config.Layout.BorderWidth
-	m.RightPaneW = width/2 - config.Layout.BorderWidth
 }

@@ -45,6 +45,12 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 	case "find":
 		return m.find(msg.Args)
 
+	case "select":
+		return m.selectFiles(msg.Args)
+
+	case "deselect":
+		return m.deselectFiles(msg.Args)
+
 	default:
 		if strings.HasPrefix(msg.Name, "!") {
 			return m.execCommand(msg.Name[1:], msg.Args)
@@ -290,6 +296,40 @@ func (m *Model) find(args []string) (tea.Model, tea.Cmd) {
 
 			m.updatePreview()
 			break
+		}
+	}
+
+	return m, nil
+}
+
+func (m *Model) selectFiles(args []string) (tea.Model, tea.Cmd) {
+	if len(args) == 0 {
+		return m, nil
+	}
+
+	pattern := strings.Join(args, " ")
+
+	for _, f := range m.FileTree {
+		matched, _ := filepath.Match(pattern, f.Name)
+		if matched {
+			m.Selected[filepath.Join(m.CurPath, f.Name)] = struct{}{}
+		}
+	}
+
+	return m, nil
+}
+
+func (m *Model) deselectFiles(args []string) (tea.Model, tea.Cmd) {
+	if len(args) == 0 {
+		return m, nil
+	}
+
+	pattern := strings.Join(args, " ")
+
+	for _, f := range m.FileTree {
+		matched, _ := filepath.Match(pattern, f.Name)
+		if matched {
+			delete(m.Selected, filepath.Join(m.CurPath, f.Name))
 		}
 	}
 

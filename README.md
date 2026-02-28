@@ -36,3 +36,4 @@ To open the command prompt press `:`
 - `bm list` - list all saved bookmarks
 - `alert <type> <text>` - open the alert box (possible types: `normal`, `info`, `warning`, `error`)
 - `alert <text>` - open the alert box, with the default type `normal`
+- `!<name> <args>` - executes a shell command

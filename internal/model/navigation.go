@@ -79,6 +79,7 @@ func (m *Model) NavigateToParent() error {
 	m.Cursor = 0
 	m.LeftScroll = 0
 	m.RightScroll = 0
+	m.Selected = make(map[string]struct{})
 
 	return nil
 }
@@ -97,6 +98,7 @@ func (m *Model) NavigateInto() error {
 	m.Cursor = 0
 	m.LeftScroll = 0
 	m.RightScroll = 0
+	m.Selected = make(map[string]struct{})
 
 	return nil
 }

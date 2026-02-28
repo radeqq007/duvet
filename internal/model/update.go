@@ -72,7 +72,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "right", "l":
 			m.Focus = pane.Right
 
-		case "enter", " ":
+		case "enter":
 			path := m.FileTree[m.Cursor]
 			if path.IsDir {
 				m.NavigateInto()
@@ -80,6 +80,16 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				newPath := filepath.Join(m.CurPath, path.Name)
 				return m, openFile(newPath)
 			}
+
+		case " ":
+			path := m.CurrentFilePath()
+			if _, ok := m.Selected[path]; ok {
+				delete(m.Selected, path)
+			} else {
+				m.Selected[path] = struct{}{}
+			}
+			// TODO: navigating down kinda gives nice UX but also can be annoying
+			// m.NavigateDown()
 		}
 
 	case command.Msg:

@@ -31,11 +31,17 @@ func (m Model) View() string {
 	for i := start; i < end; i++ {
 		node := m.FileTree[i]
 
+		_, isSelected := m.Selected[filepath.Join(m.CurPath, node.Name)]
+
 		var icon string
 		if node.IsDir {
 			icon = "\uf4d3"
 		} else {
 			icon = icons.GetIcon(filepath.Ext(node.Name))
+		}
+
+		if isSelected {
+			icon = "▌ " + icon
 		}
 
 		line := fmt.Sprintf("%s %s", icon, node.Name)

@@ -28,6 +28,7 @@ type Model struct {
 	CmdInput    string
 	Alert       alert.Alert
 	Preview     Preview
+	Selected    map[string]struct{}
 }
 
 type Preview struct {
@@ -70,5 +71,6 @@ func New() Model {
 			Path:    "",
 			Content: "",
 		},
+		Selected: make(map[string]struct{}),
 	}
 }

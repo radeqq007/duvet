@@ -36,6 +36,7 @@ To open the command prompt press `:`
 - `bm delete <name>` - remove a bookmark
 - `bm load <name>` - load a bookmark
 - `bm list` - list all saved bookmarks
+- `find <text>` - fuzzy match a file from current directory and jump to it
 - `alert <type> <text>` - open the alert box (possible types: `normal`, `info`, `warning`, `error`)
 - `alert <text>` - open the alert box, with the default type `normal`
 - `!<name> <args>` - executes a shell command

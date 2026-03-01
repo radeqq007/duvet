@@ -35,8 +35,8 @@ var (
 
 	AlertBoxStyle = lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
-			Padding(1, 4).
-			Width(40)
+			Padding(1, 1).
+			Width(60)
 
 	AlertNormalStyle = AlertBoxStyle.
 				BorderForeground(lipgloss.Color(config.Colors.AlertNormalBorder)).

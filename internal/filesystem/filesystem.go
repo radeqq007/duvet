@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/alecthomas/chroma/v2/quick"
@@ -37,7 +38,20 @@ func GetFiles(path string) ([]FileNode, error) {
 		}
 	}
 
-	return allFiles, nil
+	return sortFiles(allFiles), nil
+}
+
+func sortFiles(files []FileNode) []FileNode {
+	// TODO: add different sortings (by name, date, size etc.)
+	sort.Slice(files, func(i, j int) bool {
+		if files[i].IsDir != files[j].IsDir {
+			return files[i].IsDir
+		}
+
+		return files[i].Name < files[j].Name
+	})
+
+	return files
 }
 
 func ReadFileContent(file string) (string, error) {

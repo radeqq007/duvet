@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/alecthomas/chroma/v2/quick"
+	"github.com/radeqq007/duvet/internal/config"
 )
 
 type FileNode struct {
@@ -72,7 +73,7 @@ func IsBinary(content []byte) bool {
 func Highlight(content, filename string) string {
 	var buf bytes.Buffer
 	// TODO make the highligh theme configurable
-	err := quick.Highlight(&buf, content, filename, "terminal256", "dracula")
+	err := quick.Highlight(&buf, content, filename, "terminal256", config.PreviewTheme)
 	if err != nil {
 		return content
 	}

@@ -10,6 +10,7 @@ import (
 type fileConfig struct {
 	Colors        ColorsConfig `toml:"colors"`
 	DefaultEditor string       `toml:"default_editor"`
+	PreviewTheme  string       `toml:"preview_theme"`
 }
 
 type LayoutConfig struct {
@@ -68,6 +69,7 @@ var Colors = ColorsConfig{
 }
 
 var DefaultEditor = "nvim"
+var PreviewTheme = "dracula"
 
 func Load() error {
 	configDir, err := os.UserConfigDir()
@@ -88,6 +90,7 @@ func Load() error {
 	var fc fileConfig
 	fc.Colors = Colors
 	fc.DefaultEditor = DefaultEditor
+	fc.PreviewTheme = PreviewTheme
 
 	if err := toml.Unmarshal(data, &fc); err != nil {
 		return err
@@ -95,6 +98,7 @@ func Load() error {
 
 	Colors = fc.Colors
 	DefaultEditor = fc.DefaultEditor
+	PreviewTheme = fc.PreviewTheme
 
 	return nil
 }

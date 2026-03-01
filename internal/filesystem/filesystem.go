@@ -21,7 +21,7 @@ func GetFiles(path string) ([]FileNode, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer dir.Close()
+	defer func() { _ = dir.Close() }()
 
 	entries, err := dir.Readdir(0)
 	if err != nil {

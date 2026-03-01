@@ -48,8 +48,9 @@ func New() Model {
 		files = []filesystem.FileNode{}
 	}
 
-	config.Load()
-	config.LoadBookmarks()
+	// TODO: handle those errors somehow, rn it just quietly fails
+	_ = config.Load()
+	_ = config.LoadBookmarks()
 
 	return Model{
 		FileTree:    files,

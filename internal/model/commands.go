@@ -192,7 +192,7 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 		name := args[1]
 
 		if path, ok := config.GetBookmark(name); !ok {
-			m.ShowAlert(alert.Error, "No bookmark '", name, "' found.")
+			m.ShowAlert(alert.Error, "No bookmark '"+name+"' found.")
 		} else {
 			m.CurPath = path
 			m.ParentDir = filepath.Dir(path)
@@ -212,7 +212,10 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 			return m, nil
 		}
 		name := args[1]
-		config.DeleteBookmark(name)
+		err := config.DeleteBookmark(name)
+		if err != nil {
+			m.ShowAlert(alert.Error, "Error deleting the bookmark:", err.Error())
+		}
 	}
 
 	return m, nil

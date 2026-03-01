@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/command"
 	"github.com/radeqq007/duvet/internal/mode"
 	"github.com/radeqq007/duvet/internal/pane"
@@ -62,7 +63,10 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "left", "h":
 			if m.Focus == pane.Left {
-				m.NavigateToParent()
+				if err := m.NavigateToParent(); err != nil {
+					m.ShowAlert(alert.Error, "Cannot navigate to parent:", err.Error())
+				}
+
 			} else {
 				m.Focus = pane.Left
 			}
@@ -73,7 +77,9 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			path := m.FileTree[m.Cursor]
 			if path.IsDir {
-				m.NavigateInto()
+				if err := m.NavigateInto(); err != nil {
+					m.ShowAlert(alert.Error, "Cannot navigate into:", err.Error())
+				}
 			} else {
 				newPath := filepath.Join(m.CurPath, path.Name)
 				return m, openFile(newPath)

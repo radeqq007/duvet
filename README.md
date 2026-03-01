@@ -48,6 +48,46 @@ In order for icons to render properly you also need a **[Nerd Font](https://www.
 - `deselect <pattern>` - deselect files that match the pattern (e.g. `:deselect *.rs`)
 - `!<command> <args>` - executes a shell command
 
+## Config
+
+
+The configuration file is located in the system's default config directory:
+
+- Linux: `~/.config/duvet/config.toml`
+- macOS: `~/Library/Application Support/duvet/config.toml`
+- Windows: `%APPDATA%\duvet\config.toml`
+
+The default options are as follows:
+```toml
+default_editor = "nvim"
+preview_theme = "dracula"
+
+[colors]
+pane_border = "159"
+focused_pane_border = "153"
+
+selected_file_bg = "62"
+selected_file_fg = "230"
+
+dir_fg = "39"
+file_fg = "252"
+
+cmd_box_fg = "159"
+cmd_box_border = "159"
+
+alert_normal_fg = "123"
+alert_normal_border = "123"
+
+alert_info_fg = "33"
+alert_info_border = "33"
+
+alert_warning_fg = "220"
+alert_warning_border = "220"
+
+alert_error_fg = "9"
+alert_error_border = "9"
+```
+
 ## Demo
 
 ![Demo](.github/assets/demo.gif)

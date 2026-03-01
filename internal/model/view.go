@@ -27,7 +27,7 @@ func (m Model) View() string {
 	rightPane := m.RenderRightPane()
 	bar := m.RenderStatusBar()
 
-	view := lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
+	view := lipgloss.JoinHorizontal(lipgloss.Bottom, leftPane, rightPane)
 	view = lipgloss.JoinVertical(lipgloss.Left, view, bar)
 
 	switch m.Mode {

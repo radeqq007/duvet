@@ -177,7 +177,7 @@ func (m *Model) RenderStatusBar() string {
 
 	var left string
 	left += prettifyPath(m.CurPath)
-	
+
 	left += seperator + strconv.Itoa(len(m.FileTree)) + " items"
 
 	selected := len(m.Selected)
@@ -191,19 +191,23 @@ func (m *Model) RenderStatusBar() string {
 	if !file.IsDir {
 		fileSize = filesystem.GetFileSize(m.CurrentFilePath())
 	}
-	
+
 	right += icon + " " + file.Name
-	
+
 	if fileSize != "" {
 		right += seperator + fileSize
 	}
 
 	// TODO: that -2 is padding, save that in the config or something cause now it's just a magic number
-	spaceCount := m.Width - ansi.StringWidth(left) - ansi.StringWidth(right) - config.Layout.BorderWidth*2 - 2
+	spaceCount := m.Width - ansi.StringWidth(
+		left,
+	) - ansi.StringWidth(
+		right,
+	) - config.Layout.BorderWidth*2 - 2
 	spaceCount = max(spaceCount, 0)
 
-  spacer := strings.Repeat(" ", spaceCount)
-	
+	spacer := strings.Repeat(" ", spaceCount)
+
 	content := left + spacer + right
 
 	bar := styles.StatusBarStyle.Render(content)

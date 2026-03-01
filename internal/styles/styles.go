@@ -55,6 +55,6 @@ var (
 				Foreground(lipgloss.Color(config.Colors.AlertWarningFG))
 
 	StatusBarStyle = PaneStyle.
-		Height(1).
-		Padding(0, 1)
+			Height(1).
+			Padding(0, 1)
 )

@@ -7,7 +7,6 @@ import (
 
 	"charm.land/lipgloss/v2"
 	"github.com/radeqq007/duvet/internal/alert"
-	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/icons"
 	"github.com/radeqq007/duvet/internal/mode"
 	"github.com/radeqq007/duvet/internal/pane"
@@ -120,36 +119,26 @@ func (m *Model) RenderLeftPane() string {
 
 func (m *Model) RenderRightPane() string {
 	var rightContent strings.Builder
-
 	visibleHeight := m.VisibleHeight()
 
-	if !m.FileTree[m.Cursor].IsDir {
-		fileName := m.FileTree[m.Cursor].Name
-		file := filepath.Join(m.CurPath, fileName)
-
-		content, _ := filesystem.ReadFileContent(file)
-		content = filesystem.Highlight(content, fileName)
-
+	if m.Preview.Content != "" {
 		wrapped := lipgloss.NewStyle().
 			Width(m.Width/2 - 2).
-			Render(content)
+			Render(m.Preview.Content)
 
 		visualLines := strings.Split(wrapped, "\n")
-
 		start := m.RightScroll
 		end := min(start+visibleHeight, len(visualLines))
 
 		for i := start; i < end; i++ {
 			rightContent.WriteString(visualLines[i] + "\n")
 		}
-
-		linesRendered := end - start
-		for i := linesRendered; i < visibleHeight; i++ {
+		for i := end - start; i < visibleHeight; i++ {
 			rightContent.WriteByte('\n')
 		}
 	} else {
 		for range visibleHeight {
-			_ = rightContent.WriteByte('\n')
+			rightContent.WriteByte('\n')
 		}
 	}
 

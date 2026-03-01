@@ -67,6 +67,8 @@ func (m *Model) updatePreview() {
 		content = ""
 	}
 
+	content = filesystem.Highlight(content, current.Name)
+
 	m.Preview.Path = newPath
 	m.Preview.Content = content
 }

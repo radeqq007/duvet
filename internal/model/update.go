@@ -53,13 +53,16 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.ScrollRightUp()
 			}
+			m.updatePreview()
 
 		case "down", "j":
 			if m.Focus == pane.Left {
 				m.NavigateDown()
 			} else {
 				m.ScrollRightDown()
+				m.updatePreview()
 			}
+			m.updatePreview()
 
 		case "left", "h":
 			if m.Focus == pane.Left {
@@ -83,6 +86,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				newPath := filepath.Join(m.CurPath, path.Name)
 				return m, openFile(newPath)
 			}
+			m.updatePreview()
 
 		case " ":
 			path := m.CurrentFilePath()

@@ -68,7 +68,7 @@ var Colors = ColorsConfig{
 	AlertWarningBorder: "220",
 }
 
-var DefaultEditor = "nvim"
+var DefaultEditor = "vim"
 var PreviewTheme = "dracula"
 
 func Load() error {

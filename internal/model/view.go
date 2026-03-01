@@ -3,10 +3,14 @@ package model
 import (
 	"fmt"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 	"github.com/radeqq007/duvet/internal/alert"
+	"github.com/radeqq007/duvet/internal/config"
+	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/icons"
 	"github.com/radeqq007/duvet/internal/mode"
 	"github.com/radeqq007/duvet/internal/pane"
@@ -21,8 +25,10 @@ func (m Model) View() string {
 
 	leftPane := m.RenderLeftPane()
 	rightPane := m.RenderRightPane()
+	bar := m.RenderStatusBar()
 
 	view := lipgloss.JoinHorizontal(lipgloss.Top, leftPane, rightPane)
+	view = lipgloss.JoinVertical(lipgloss.Left, view, bar)
 
 	switch m.Mode {
 	case mode.Command:
@@ -62,7 +68,7 @@ func (m Model) View() string {
 func (m *Model) RenderLeftPane() string {
 	var leftContent strings.Builder
 
-	visibleHeight := m.VisibleHeight()
+	visibleHeight := m.VisibleHeight() - config.Layout.StatusBarHeight - config.Layout.BorderWidth
 
 	start := m.LeftScroll
 	end := m.LeftScroll + visibleHeight
@@ -105,12 +111,12 @@ func (m *Model) RenderLeftPane() string {
 	if m.Focus == pane.Left {
 		leftPane = styles.FocusedPaneStyle.
 			Width(m.Width / 2).
-			Height(m.Height - 2).
+			Height(visibleHeight).
 			Render(leftContent.String())
 	} else {
 		leftPane = styles.PaneStyle.
 			Width(m.Width / 2).
-			Height(m.Height - 2).
+			Height(visibleHeight).
 			Render(leftContent.String())
 	}
 
@@ -119,7 +125,7 @@ func (m *Model) RenderLeftPane() string {
 
 func (m *Model) RenderRightPane() string {
 	var rightContent strings.Builder
-	visibleHeight := m.VisibleHeight()
+	visibleHeight := m.VisibleHeight() - config.Layout.StatusBarHeight - config.Layout.BorderWidth
 
 	if m.Preview.Content != "" {
 		wrapped := lipgloss.NewStyle().
@@ -146,16 +152,63 @@ func (m *Model) RenderRightPane() string {
 	if m.Focus == pane.Right {
 		rightPane = styles.FocusedPaneStyle.
 			Width(m.Width / 2).
-			Height(m.Height - 2).
+			Height(visibleHeight).
 			Render(rightContent.String())
 	} else {
 		rightPane = styles.PaneStyle.
 			Width(m.Width / 2).
-			Height(m.Height - 2).
+			Height(visibleHeight).
 			Render(rightContent.String())
 	}
 
 	return rightPane
+}
+
+func (m *Model) RenderStatusBar() string {
+	file := m.CurrentFile()
+	var icon string
+	if file.IsDir {
+		icon = "\uf4d3"
+	} else {
+		icon = icons.GetIcon(file.Name)
+	}
+
+	seperator := " | "
+
+	var left string
+	left += prettifyPath(m.CurPath)
+	
+	left += seperator + strconv.Itoa(len(m.FileTree)) + " items"
+
+	selected := len(m.Selected)
+	if selected > 0 {
+		left += seperator + "Selected: " + strconv.Itoa(selected)
+	}
+
+	var right string
+
+	fileSize := ""
+	if !file.IsDir {
+		fileSize = filesystem.GetFileSize(m.CurrentFilePath())
+	}
+	
+	right += icon + " " + file.Name
+	
+	if fileSize != "" {
+		right += seperator + fileSize
+	}
+
+	// TODO: that -2 is padding, save that in the config or something cause now it's just a magic number
+	spaceCount := m.Width - ansi.StringWidth(left) - ansi.StringWidth(right) - config.Layout.BorderWidth*2 - 2
+	spaceCount = max(spaceCount, 0)
+
+  spacer := strings.Repeat(" ", spaceCount)
+	
+	content := left + spacer + right
+
+	bar := styles.StatusBarStyle.Render(content)
+
+	return bar
 }
 
 func (m *Model) UpdateDimensions(width, height int) {

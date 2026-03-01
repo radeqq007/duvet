@@ -1,6 +1,7 @@
 package model
 
 import (
+	"os"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -82,6 +83,14 @@ func (m *Model) getTargets() []string {
 		return paths
 	}
 	return []string{m.CurrentFilePath()}
+}
+
+func prettifyPath(path string) string {
+	home, err := os.UserHomeDir()
+	if err == nil && strings.HasPrefix(path, home) {
+		return "~" + strings.TrimPrefix(path, home)
+	}
+	return path
 }
 
 func isMediaFile(path string) bool {

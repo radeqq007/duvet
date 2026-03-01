@@ -16,6 +16,7 @@ type fileConfig struct {
 type LayoutConfig struct {
 	BorderWidth      int
 	HeaderFooterSize int
+	StatusBarHeight  int
 	MinPaneWidth     int
 	DefaultPaneWidth int
 }
@@ -43,8 +44,9 @@ type ColorsConfig struct {
 }
 
 var Layout = LayoutConfig{
-	BorderWidth:      2,
+	BorderWidth:      1,
 	HeaderFooterSize: 4,
+	StatusBarHeight:  1,
 	MinPaneWidth:     20,
 	DefaultPaneWidth: 40,
 }

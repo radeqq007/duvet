@@ -53,4 +53,8 @@ var (
 	AlertWarningStyle = AlertBoxStyle.
 				BorderForeground(lipgloss.Color(config.Colors.AlertWarningBorder)).
 				Foreground(lipgloss.Color(config.Colors.AlertWarningFG))
+
+	StatusBarStyle = PaneStyle.
+		Height(1).
+		Padding(0, 1)
 )

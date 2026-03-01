@@ -68,6 +68,24 @@ func ReadFileContent(file string) (string, error) {
 	return text, err
 }
 
+func GetFileSize(path string) string {
+	fileInfo, err := os.Stat(path)
+  if err != nil {
+		return "error: " + err.Error()
+  }
+
+  size := float64(fileInfo.Size())
+  units := []string{"B", "KB", "MB", "GB", "TB"}
+
+  i := 0
+  for size >= 1024 && i < len(units)-1 {
+    size /= 1024
+    i++
+  }
+
+   return fmt.Sprintf("%.2f %s", size, units[i])
+}
+
 func ParentDir(path string) string {
 	return filepath.Dir(path)
 }

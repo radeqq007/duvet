@@ -129,7 +129,7 @@ func (m *Model) RenderRightPane() string {
 
 	if m.Preview.Content != "" {
 		wrapped := lipgloss.NewStyle().
-			Width(m.Width/2 - 2).
+			Width(m.Width/2 - config.Layout.BorderWidth*2).
 			Render(m.Preview.Content)
 
 		visualLines := strings.Split(wrapped, "\n")

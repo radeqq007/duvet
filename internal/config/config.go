@@ -25,7 +25,7 @@ type ColorsConfig struct {
 	FocusedPaneBorder  string `toml:"focused_pane_border"`
 	SelectedFileBG     string `toml:"selected_file_bg"`
 	SelectedFileFG     string `toml:"selected_file_fg"`
-	DirFG              string `toml:"dir_bg"`
+	DirFG              string `toml:"dir_fg"`
 	FileFG             string `toml:"file_fg"`
 	CmdBoxFG           string `toml:"cmd_box_fg"`
 	CmdBoxBorder       string `toml:"cmd_box_border"`

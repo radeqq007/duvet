@@ -180,7 +180,6 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 
 		name := args[1]
 		err := config.SetBookmark(name, m.CurPath)
-
 		if err != nil {
 			m.ShowAlert(alert.Error, "Error saving the bookmark:", err.Error())
 		}

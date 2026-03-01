@@ -11,7 +11,6 @@ import (
 )
 
 func openFile(path string) tea.Cmd {
-
 	if isMediaFile(path) {
 		return openWithSystem(path)
 	}

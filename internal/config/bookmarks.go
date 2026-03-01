@@ -45,7 +45,6 @@ func LoadBookmarks() error {
 
 func SaveBookmarks() error {
 	bmDir, err := os.UserConfigDir()
-
 	if err != nil {
 		return err
 	}
@@ -53,7 +52,7 @@ func SaveBookmarks() error {
 	dirPath := filepath.Join(bmDir, "duvet")
 	bmPath := filepath.Join(dirPath, "bookmarks.toml")
 
-	if err := os.MkdirAll(dirPath, 0755); err != nil {
+	if err := os.MkdirAll(dirPath, 0o755); err != nil {
 		return err
 	}
 

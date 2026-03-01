@@ -68,8 +68,10 @@ var Colors = ColorsConfig{
 	AlertWarningBorder: "220",
 }
 
-var DefaultEditor = "vim"
-var PreviewTheme = "dracula"
+var (
+	DefaultEditor = "vim"
+	PreviewTheme  = "dracula"
+)
 
 func Load() error {
 	configDir, err := os.UserConfigDir()

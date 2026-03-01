@@ -59,7 +59,7 @@ The configuration file is located in the system's default config directory:
 
 The default options are as follows:
 ```toml
-default_editor = "nvim"
+default_editor = "vim"
 preview_theme = "dracula"
 
 [colors]

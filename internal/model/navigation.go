@@ -59,7 +59,8 @@ func (m *Model) NavigateDown() {
 
 	if m.Cursor < len(m.FileTree)-1 {
 		m.Cursor++
-		visibleHeight := m.VisibleHeight()
+
+		visibleHeight := m.VisibleHeight() - config.Layout.StatusBarHeight - config.Layout.BorderWidth
 		if m.Cursor >= m.LeftScroll+visibleHeight {
 			m.LeftScroll = m.Cursor - visibleHeight + 1
 		}

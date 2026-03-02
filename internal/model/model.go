@@ -27,6 +27,7 @@ type Model struct {
 	Alert       alert.Alert
 	Preview     Preview
 	Selected    map[string]struct{}
+	Yanked      []string
 }
 
 type Preview struct {

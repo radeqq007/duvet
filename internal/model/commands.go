@@ -13,6 +13,7 @@ import (
 	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/command"
 	"github.com/radeqq007/duvet/internal/config"
+	"github.com/radeqq007/duvet/internal/filesystem"
 )
 
 func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
@@ -50,6 +51,12 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 
 	case "deselect":
 		return m.deselectFiles(msg.Args)
+
+	case "yank":
+		return m.yank(msg.Args)
+
+	case "paste":
+		return m.paste(msg.Args)
 
 	default:
 		if strings.HasPrefix(msg.Name, "!") {
@@ -335,5 +342,41 @@ func (m *Model) deselectFiles(args []string) (tea.Model, tea.Cmd) {
 		}
 	}
 
+	return m, nil
+}
+
+func (m *Model) yank(args []string) (tea.Model, tea.Cmd) {
+	files := m.getTargets()
+	m.Yanked = make([]string, len(files))
+	copy(m.Yanked, files)
+
+	return m, nil
+}
+
+func (m *Model) paste(args []string) (tea.Model, tea.Cmd) {
+	for _, src := range m.Yanked {
+		name := filepath.Base(src)
+		dstPath := filepath.Join(m.CurPath, name)
+
+		if _, err := os.Stat(dstPath); err == nil {
+			ext := filepath.Ext(name)
+			base := strings.TrimSuffix(name, ext)
+			if base == "" {
+				// dotfiles like .gitignore 
+				dstPath = filepath.Join(m.CurPath, ext + "_copy")
+			} else {
+				dstPath = filepath.Join(m.CurPath, base + "_copy" + ext)
+			}
+    }
+
+		if err := filesystem.CopyFile(src, dstPath); err != nil {
+ 			m.ShowAlert(alert.Error, "Paste error:", err.Error())
+      return m, nil
+   	}
+	}
+
+	m.Yanked = nil
+	m.refreshFiles()
+	
 	return m, nil
 }

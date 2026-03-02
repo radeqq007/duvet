@@ -34,6 +34,8 @@ In order for icons to render properly you also need a **[Nerd Font](https://www.
 - `quit` - quit
 - `rename` - rename current file
 - `delete` - delete selected files
+- `yank` - yank selected files
+- `paste` - paste yanked files
 - `touch <file name>` - create a new file
 - `mkdir <directory name>` - create a new directory
 - `cd` - change directory

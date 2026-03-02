@@ -119,7 +119,7 @@ func (m *Model) mkdir(args []string) (tea.Model, tea.Cmd) {
 
 	path := filepath.Join(m.CurPath, args[0])
 
-	err := os.Mkdir(path, os.FileMode(os.O_CREATE))
+	err := os.Mkdir(path, 0755)
 	if err != nil {
 		m.ShowAlert(alert.Error, "Error creating a directory: ", err.Error())
 	}

@@ -362,21 +362,21 @@ func (m *Model) paste(args []string) (tea.Model, tea.Cmd) {
 			ext := filepath.Ext(name)
 			base := strings.TrimSuffix(name, ext)
 			if base == "" {
-				// dotfiles like .gitignore 
-				dstPath = filepath.Join(m.CurPath, ext + "_copy")
+				// dotfiles like .gitignore
+				dstPath = filepath.Join(m.CurPath, ext+"_copy")
 			} else {
-				dstPath = filepath.Join(m.CurPath, base + "_copy" + ext)
+				dstPath = filepath.Join(m.CurPath, base+"_copy"+ext)
 			}
-    }
+		}
 
 		if err := filesystem.CopyFile(src, dstPath); err != nil {
- 			m.ShowAlert(alert.Error, "Paste error:", err.Error())
-      return m, nil
-   	}
+			m.ShowAlert(alert.Error, "Paste error:", err.Error())
+			return m, nil
+		}
 	}
 
 	m.Yanked = nil
 	m.refreshFiles()
-	
+
 	return m, nil
 }

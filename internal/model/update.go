@@ -68,6 +68,8 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if err := m.NavigateToParent(); err != nil {
 					m.ShowAlert(alert.Error, "Cannot navigate to parent:", err.Error())
 				}
+
+				m.Preview = Preview{}
 			} else {
 				m.Focus = pane.Left
 			}

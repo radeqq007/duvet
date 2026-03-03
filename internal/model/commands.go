@@ -26,7 +26,7 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 		return m.rename(msg.Args)
 
 	case "delete":
-		return m.delete(msg.Args)
+		return m.delete()
 
 	case "touch":
 		return m.touch(msg.Args)
@@ -53,10 +53,10 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 		return m.deselectFiles(msg.Args)
 
 	case "yank":
-		return m.yank(msg.Args)
+		return m.yank()
 
 	case "paste":
-		return m.paste(msg.Args)
+		return m.paste()
 
 	default:
 		if strings.HasPrefix(msg.Name, "!") {
@@ -87,7 +87,7 @@ func (m *Model) rename(args []string) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m *Model) delete(args []string) (tea.Model, tea.Cmd) {
+func (m *Model) delete() (tea.Model, tea.Cmd) {
 	files := m.getTargets()
 
 	for _, file := range files {
@@ -344,7 +344,7 @@ func (m *Model) deselectFiles(args []string) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m *Model) yank(args []string) (tea.Model, tea.Cmd) {
+func (m *Model) yank() (tea.Model, tea.Cmd) {
 	files := m.getTargets()
 	m.Yanked = make([]string, len(files))
 	copy(m.Yanked, files)
@@ -352,7 +352,7 @@ func (m *Model) yank(args []string) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m *Model) paste(args []string) (tea.Model, tea.Cmd) {
+func (m *Model) paste() (tea.Model, tea.Cmd) {
 	for _, src := range m.Yanked {
 		name := filepath.Base(src)
 		dstPath := filepath.Join(m.CurPath, name)

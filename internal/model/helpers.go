@@ -63,11 +63,13 @@ func (m *Model) updatePreview() {
 		return
 	}
 
-	content, err := filesystem.ReadFileContent(newPath)
-	if err != nil {
-		content = ""
+	res := <-filesystem.ReadFileContent(newPath)
+
+	if res.Err != nil {
+		res.Content = nil
 	}
 
+	content := string(res.Content)
 	content = filesystem.Highlight(content, current.Name)
 
 	m.Preview.Path = newPath

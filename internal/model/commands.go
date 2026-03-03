@@ -303,12 +303,11 @@ func (m *Model) find(args []string) (tea.Model, tea.Cmd) {
 				m.LeftScroll = m.Cursor - visibleHeight + 1
 			}
 
-			m.updatePreview()
 			break
 		}
 	}
 
-	return m, nil
+	return m, m.loadPreview()
 }
 
 func (m *Model) selectFiles(args []string) (tea.Model, tea.Cmd) {

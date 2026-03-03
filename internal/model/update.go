@@ -50,19 +50,18 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "up", "k":
 			if m.Focus == pane.Left {
 				m.NavigateUp()
+				return m, m.loadPreview()
 			} else {
 				m.ScrollRightUp()
 			}
-			m.updatePreview()
 
 		case "down", "j":
 			if m.Focus == pane.Left {
 				m.NavigateDown()
+				return m, m.loadPreview()
 			} else {
 				m.ScrollRightDown()
-				m.updatePreview()
 			}
-			m.updatePreview()
 
 		case "left", "h":
 			if m.Focus == pane.Left {
@@ -82,11 +81,12 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if err := m.NavigateInto(); err != nil {
 					m.ShowAlert(alert.Error, "Cannot navigate into:", err.Error())
 				}
+				m.Preview = Preview{}
+				return m, m.loadPreview()
 			} else {
 				newPath := filepath.Join(m.CurPath, path.Name)
 				return m, openFile(newPath)
 			}
-			m.updatePreview()
 
 		case " ":
 			path := m.CurrentFilePath()
@@ -101,6 +101,10 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case command.Msg:
 		return m.handleCommand(msg)
+
+	case PreviewLoaded:
+		m.Preview.Path = msg.Path
+		m.Preview.Content = msg.Content
 	}
 
 	return m, nil

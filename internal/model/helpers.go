@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strings"
 
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
@@ -44,36 +45,29 @@ func (m *Model) ShowAlert(alertType alert.AlertType, text ...string) {
 	m.Mode = mode.Alert
 }
 
-func (m *Model) updatePreview() {
+func (m *Model) loadPreview() tea.Cmd {
 	if len(m.FileTree) == 0 {
-		m.Preview.Path = ""
-		m.Preview.Content = ""
-		return
+		return nil
 	}
 
 	current := m.FileTree[m.Cursor]
 	if current.IsDir {
-		m.Preview.Path = ""
-		m.Preview.Content = ""
-		return
+		return nil
 	}
 
 	newPath := filepath.Join(m.CurPath, current.Name)
 	if newPath == m.Preview.Path {
-		return
+		return nil
 	}
 
-	res := <-filesystem.ReadFileContent(newPath)
-
-	if res.Err != nil {
-		res.Content = nil
+	return func() tea.Msg {
+		content, err := filesystem.ReadFileContent(newPath)
+		if err != nil {
+			return PreviewLoaded{Path: newPath, Content: ""}
+		}
+		highlighted := filesystem.Highlight(string(content), current.Name)
+		return PreviewLoaded{Path: newPath, Content: highlighted}
 	}
-
-	content := string(res.Content)
-	content = filesystem.Highlight(content, current.Name)
-
-	m.Preview.Path = newPath
-	m.Preview.Content = content
 }
 
 func (m *Model) getTargets() []string {

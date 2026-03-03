@@ -37,6 +37,11 @@ type Preview struct {
 
 type FileClosed struct{ Err error }
 
+type PreviewLoaded struct {
+	Path    string
+	Content string
+}
+
 func (m Model) Init() tea.Cmd {
 	return nil
 }

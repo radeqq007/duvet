@@ -55,18 +55,31 @@ func sortFiles(files []FileNode) []FileNode {
 	return files
 }
 
-func ReadFileContent(file string) (string, error) {
-	content, err := os.ReadFile(file)
-	if err != nil {
-		return "", err
-	}
+type FileResult struct {
+	Content []byte
+	Err     error
+}
 
-	if IsBinary(content) {
-		return "", fmt.Errorf("binary file")
-	}
+func ReadFileContent(file string) (<-chan FileResult) {
+	ch := make(chan FileResult, 1)
+	
+	go func() {
+		defer close(ch)
 
-	text := string(content)
-	return text, err
+		content, err := os.ReadFile(file)
+		if err != nil {
+			ch <- FileResult{Err: err}
+			return
+		}
+		
+		if IsBinary(content) {
+			ch <- FileResult{ Err: fmt.Errorf("binary file") }
+		}
+
+		ch <- FileResult{Content: content}
+	}()
+
+	return ch
 }
 
 func GetFileSize(path string) string {

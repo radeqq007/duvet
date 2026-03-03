@@ -375,7 +375,6 @@ func (m *Model) paste(args []string) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	m.Yanked = nil
 	m.refreshFiles()
 
 	return m, nil

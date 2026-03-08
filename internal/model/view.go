@@ -177,6 +177,9 @@ func (m *Model) RenderStatusBar() string {
 
 	var left string
 	left += prettifyPath(m.CurPath)
+	if m.Git.Branch != "" {
+		left += " on \ue0a0 " + m.Git.Branch
+	}
 
 	left += seperator + strconv.Itoa(len(m.FileTree)) + " items"
 

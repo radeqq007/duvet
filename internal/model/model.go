@@ -7,6 +7,7 @@ import (
 	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
+	"github.com/radeqq007/duvet/internal/git"
 	"github.com/radeqq007/duvet/internal/mode"
 	"github.com/radeqq007/duvet/internal/pane"
 )
@@ -15,10 +16,10 @@ type Model struct {
 	FileTree []filesystem.FileNode
 	Cursor   int
 	CurPath  string
-
-	Layout  LayoutState
-	Display ViewState
-	IO      IOState
+	Git      *git.Status
+	Layout 	 LayoutState
+	Display	 ViewState
+	IO     	 IOState
 }
 
 type LayoutState struct {
@@ -72,6 +73,7 @@ func New() Model {
 	return Model{
 		FileTree: files,
 		CurPath:  dir,
+		Git: git.GetStatus(dir),
 		IO: IOState{
 			Selected: make(map[string]struct{}),
 		},

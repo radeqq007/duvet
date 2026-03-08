@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
+	"github.com/radeqq007/duvet/internal/git"
 	"github.com/radeqq007/duvet/internal/pane"
 )
 
@@ -74,12 +75,14 @@ func (m *Model) NavigateToParent() error {
 		return err
 	}
 
+
 	m.CurPath = parentDir
 	m.FileTree = files
 	m.Cursor = 0
 	m.Display.LeftScroll = 0
 	m.Display.RightScroll = 0
 	m.IO.Selected = make(map[string]struct{})
+	m.Git = git.GetStatus(m.CurPath)
 
 	return nil
 }
@@ -98,6 +101,7 @@ func (m *Model) NavigateInto() error {
 	m.Display.LeftScroll = 0
 	m.Display.RightScroll = 0
 	m.IO.Selected = make(map[string]struct{})
+	m.Git = git.GetStatus(m.CurPath)
 
 	return nil
 }

@@ -17,9 +17,9 @@ type Model struct {
 	Cursor   int
 	CurPath  string
 	Git      *git.Status
-	Layout 	 LayoutState
-	Display	 ViewState
-	IO     	 IOState
+	Layout   LayoutState
+	Display  ViewState
+	IO       IOState
 }
 
 type LayoutState struct {
@@ -73,7 +73,7 @@ func New() Model {
 	return Model{
 		FileTree: files,
 		CurPath:  dir,
-		Git: git.GetStatus(dir),
+		Git:      git.GetStatus(dir),
 		IO: IOState{
 			Selected: make(map[string]struct{}),
 		},

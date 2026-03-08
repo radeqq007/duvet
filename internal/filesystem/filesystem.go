@@ -114,12 +114,12 @@ func Highlight(content, filename string) string {
 
 func CopyFile(src, dst string) error {
 	in, err := os.Open(src)
-  if err != nil {
-    return err
-  }
-  defer in.Close()
+	if err != nil {
+		return err
+	}
+	defer in.Close()
 
-  out, err := os.Create(dst)
+	out, err := os.Create(dst)
 	if err != nil {
 		return err
 	}

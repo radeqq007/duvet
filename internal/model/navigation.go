@@ -75,7 +75,6 @@ func (m *Model) NavigateToParent() error {
 		return err
 	}
 
-
 	m.CurPath = parentDir
 	m.FileTree = files
 	m.Cursor = 0

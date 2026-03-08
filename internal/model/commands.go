@@ -137,8 +137,8 @@ func (m *Model) mkdir(args []string) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) cd(args []string) (tea.Model, tea.Cmd) {
-	m.LeftScroll = 0
-	m.RightScroll = 0
+	m.Display.LeftScroll = 0
+	m.Display.RightScroll = 0
 	m.Cursor = 0
 
 	var target string
@@ -167,7 +167,6 @@ func (m *Model) cd(args []string) (tea.Model, tea.Cmd) {
 	}
 
 	m.CurPath = target
-	m.ParentDir = filepath.Dir(target)
 
 	m.refreshFiles()
 
@@ -202,7 +201,6 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 			m.ShowAlert(alert.Error, "No bookmark '"+name+"' found.")
 		} else {
 			m.CurPath = path
-			m.ParentDir = filepath.Dir(path)
 			m.refreshFiles()
 		}
 
@@ -297,10 +295,10 @@ func (m *Model) find(args []string) (tea.Model, tea.Cmd) {
 			m.Cursor = i
 			visibleHeight := m.VisibleHeight()
 
-			if m.Cursor < m.LeftScroll {
-				m.LeftScroll = m.Cursor
-			} else if m.Cursor >= m.LeftScroll+visibleHeight {
-				m.LeftScroll = m.Cursor - visibleHeight + 1
+			if m.Cursor < m.Display.LeftScroll {
+				m.Display.LeftScroll = m.Cursor
+			} else if m.Cursor >= m.Display.LeftScroll+visibleHeight {
+				m.Display.LeftScroll = m.Cursor - visibleHeight + 1
 			}
 
 			break
@@ -320,7 +318,7 @@ func (m *Model) selectFiles(args []string) (tea.Model, tea.Cmd) {
 	for _, f := range m.FileTree {
 		matched, _ := filepath.Match(pattern, f.Name)
 		if matched {
-			m.Selected[filepath.Join(m.CurPath, f.Name)] = struct{}{}
+			m.IO.Selected[filepath.Join(m.CurPath, f.Name)] = struct{}{}
 		}
 	}
 
@@ -337,7 +335,7 @@ func (m *Model) deselectFiles(args []string) (tea.Model, tea.Cmd) {
 	for _, f := range m.FileTree {
 		matched, _ := filepath.Match(pattern, f.Name)
 		if matched {
-			delete(m.Selected, filepath.Join(m.CurPath, f.Name))
+			delete(m.IO.Selected, filepath.Join(m.CurPath, f.Name))
 		}
 	}
 
@@ -346,14 +344,14 @@ func (m *Model) deselectFiles(args []string) (tea.Model, tea.Cmd) {
 
 func (m *Model) yank() (tea.Model, tea.Cmd) {
 	files := m.getTargets()
-	m.Yanked = make([]string, len(files))
-	copy(m.Yanked, files)
+	m.IO.Yanked = make([]string, len(files))
+	copy(m.IO.Yanked, files)
 
 	return m, nil
 }
 
 func (m *Model) paste() (tea.Model, tea.Cmd) {
-	for _, src := range m.Yanked {
+	for _, src := range m.IO.Yanked {
 		name := filepath.Base(src)
 		dstPath := filepath.Join(m.CurPath, name)
 

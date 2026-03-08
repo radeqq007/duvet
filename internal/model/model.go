@@ -2,7 +2,6 @@ package model
 
 import (
 	"os"
-	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/alert"
@@ -13,21 +12,33 @@ import (
 )
 
 type Model struct {
-	FileTree    []filesystem.FileNode
-	Cursor      int
-	Focus       pane.Pane
+	FileTree []filesystem.FileNode
+	Cursor   int
+	CurPath  string
+
+	Layout  LayoutState
+	Display ViewState
+	IO      IOState
+}
+
+type LayoutState struct {
+	Width  int
+	Height int
+}
+
+type ViewState struct {
 	LeftScroll  int
 	RightScroll int
-	Width       int
-	Height      int
-	CurPath     string
-	ParentDir   string
-	Mode        mode.Mode
-	CmdInput    string
-	Alert       alert.Alert
 	Preview     Preview
-	Selected    map[string]struct{}
-	Yanked      []string
+	Focus       pane.Pane
+}
+
+type IOState struct {
+	Mode     mode.Mode
+	CmdInput string
+	Alert    alert.Alert
+	Selected map[string]struct{}
+	Yanked   []string
 }
 
 type Preview struct {
@@ -59,21 +70,10 @@ func New() Model {
 	_ = config.LoadBookmarks()
 
 	return Model{
-		FileTree:    files,
-		Cursor:      0,
-		LeftScroll:  0,
-		RightScroll: 0,
-		Focus:       0,
-		CurPath:     dir,
-		ParentDir:   filepath.Dir(dir),
-		Alert: alert.Alert{
-			Type: alert.Normal,
-			Text: "",
+		FileTree: files,
+		CurPath:  dir,
+		IO: IOState{
+			Selected: make(map[string]struct{}),
 		},
-		Preview: Preview{
-			Path:    "",
-			Content: "",
-		},
-		Selected: make(map[string]struct{}),
 	}
 }

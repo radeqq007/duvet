@@ -19,7 +19,7 @@ import (
 )
 
 func (m Model) View() string {
-	if m.Width == 0 {
+	if m.Layout.Width == 0 {
 		return "loading..."
 	}
 
@@ -30,34 +30,34 @@ func (m Model) View() string {
 	view := lipgloss.JoinHorizontal(lipgloss.Bottom, leftPane, rightPane)
 	view = lipgloss.JoinVertical(lipgloss.Left, view, bar)
 
-	switch m.Mode {
+	switch m.IO.Mode {
 	case mode.Command:
-		content := ":" + m.CmdInput
-		if strings.HasPrefix(m.CmdInput, "!") {
-			content = "$" + m.CmdInput[1:]
+		content := ":" + m.IO.CmdInput
+		if strings.HasPrefix(m.IO.CmdInput, "!") {
+			content = "$" + m.IO.CmdInput[1:]
 		}
 		cmdBox := styles.CmdBoxStyle.Render(content)
 
-		x := m.Width/2 - lipgloss.Width(cmdBox)/2
-		y := m.Height/2 - lipgloss.Height(cmdBox)/2
+		x := m.Layout.Width/2 - lipgloss.Width(cmdBox)/2
+		y := m.Layout.Height/2 - lipgloss.Height(cmdBox)/2
 
 		view = ui.PlaceOverlay(x, y, cmdBox, view)
 
 	case mode.Alert:
 		var alertBox string
-		switch m.Alert.Type {
+		switch m.IO.Alert.Type {
 		case alert.Normal:
-			alertBox = styles.AlertNormalStyle.Render(m.Alert.Text)
+			alertBox = styles.AlertNormalStyle.Render(m.IO.Alert.Text)
 		case alert.Info:
-			alertBox = styles.AlertInfoStyle.Render(m.Alert.Text)
+			alertBox = styles.AlertInfoStyle.Render(m.IO.Alert.Text)
 		case alert.Error:
-			alertBox = styles.AlertErrorStyle.Render(m.Alert.Text)
+			alertBox = styles.AlertErrorStyle.Render(m.IO.Alert.Text)
 		case alert.Warning:
-			alertBox = styles.AlertWarningStyle.Render(m.Alert.Text)
+			alertBox = styles.AlertWarningStyle.Render(m.IO.Alert.Text)
 		}
 
-		x := m.Width/2 - lipgloss.Width(alertBox)/2
-		y := m.Height/2 - lipgloss.Height(alertBox)/2
+		x := m.Layout.Width/2 - lipgloss.Width(alertBox)/2
+		y := m.Layout.Height/2 - lipgloss.Height(alertBox)/2
 
 		view = ui.PlaceOverlay(x, y, alertBox, view)
 	}
@@ -70,14 +70,14 @@ func (m *Model) RenderLeftPane() string {
 
 	visibleHeight := m.VisibleHeight() - config.Layout.StatusBarHeight - config.Layout.BorderWidth
 
-	start := m.LeftScroll
-	end := m.LeftScroll + visibleHeight
+	start := m.Display.LeftScroll
+	end := m.Display.LeftScroll + visibleHeight
 	end = min(end, len(m.FileTree))
 
 	for i := start; i < end; i++ {
 		node := m.FileTree[i]
 
-		_, isSelected := m.Selected[filepath.Join(m.CurPath, node.Name)]
+		_, isSelected := m.IO.Selected[filepath.Join(m.CurPath, node.Name)]
 
 		var icon string
 		if node.IsDir {
@@ -93,7 +93,7 @@ func (m *Model) RenderLeftPane() string {
 		line := fmt.Sprintf("%s %s", icon, node.Name)
 
 		if i == m.Cursor {
-			line = styles.SelectedStyle.Width(m.Width / 2).Render(line)
+			line = styles.SelectedStyle.Width(m.Layout.Width / 2).Render(line)
 		} else if node.IsDir {
 			line = styles.DirStyle.Render(line)
 		} else {
@@ -108,14 +108,14 @@ func (m *Model) RenderLeftPane() string {
 	}
 
 	var leftPane string
-	if m.Focus == pane.Left {
+	if m.Display.Focus == pane.Left {
 		leftPane = styles.FocusedPaneStyle.
-			Width(m.Width / 2).
+			Width(m.Layout.Width / 2).
 			Height(visibleHeight).
 			Render(leftContent.String())
 	} else {
 		leftPane = styles.PaneStyle.
-			Width(m.Width / 2).
+			Width(m.Layout.Width / 2).
 			Height(visibleHeight).
 			Render(leftContent.String())
 	}
@@ -127,13 +127,13 @@ func (m *Model) RenderRightPane() string {
 	var rightContent strings.Builder
 	visibleHeight := m.VisibleHeight() - config.Layout.StatusBarHeight - config.Layout.BorderWidth
 
-	if m.Preview.Content != "" {
+	if m.Display.Preview.Content != "" {
 		wrapped := lipgloss.NewStyle().
-			Width(m.Width/2 - config.Layout.BorderWidth*2).
-			Render(m.Preview.Content)
+			Width(m.Layout.Width/2 - config.Layout.BorderWidth*2).
+			Render(m.Display.Preview.Content)
 
 		visualLines := strings.Split(wrapped, "\n")
-		start := m.RightScroll
+		start := m.Display.RightScroll
 		end := min(start+visibleHeight, len(visualLines))
 
 		for i := start; i < end; i++ {
@@ -149,14 +149,14 @@ func (m *Model) RenderRightPane() string {
 	}
 
 	var rightPane string
-	if m.Focus == pane.Right {
+	if m.Display.Focus == pane.Right {
 		rightPane = styles.FocusedPaneStyle.
-			Width(m.Width / 2).
+			Width(m.Layout.Width / 2).
 			Height(visibleHeight).
 			Render(rightContent.String())
 	} else {
 		rightPane = styles.PaneStyle.
-			Width(m.Width / 2).
+			Width(m.Layout.Width / 2).
 			Height(visibleHeight).
 			Render(rightContent.String())
 	}
@@ -180,7 +180,7 @@ func (m *Model) RenderStatusBar() string {
 
 	left += seperator + strconv.Itoa(len(m.FileTree)) + " items"
 
-	selected := len(m.Selected)
+	selected := len(m.IO.Selected)
 	if selected > 0 {
 		left += seperator + "Selected: " + strconv.Itoa(selected)
 	}
@@ -199,7 +199,7 @@ func (m *Model) RenderStatusBar() string {
 	}
 
 	// TODO: that -2 is padding, save that in the config or something cause now it's just a magic number
-	spaceCount := m.Width - ansi.StringWidth(
+	spaceCount := m.Layout.Width - ansi.StringWidth(
 		left,
 	) - ansi.StringWidth(
 		right,
@@ -216,6 +216,6 @@ func (m *Model) RenderStatusBar() string {
 }
 
 func (m *Model) UpdateDimensions(width, height int) {
-	m.Width = width
-	m.Height = height
+	m.Layout.Width = width
+	m.Layout.Height = height
 }

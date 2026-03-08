@@ -39,21 +39,21 @@ func openWithSystem(path string) tea.Cmd {
 }
 
 func (m *Model) NavigateUp() {
-	if m.Focus != pane.Left {
+	if m.Display.Focus != pane.Left {
 		return
 	}
 
 	if m.Cursor > 0 {
 		m.Cursor--
 
-		if m.Cursor < m.LeftScroll {
-			m.LeftScroll = m.Cursor
+		if m.Cursor < m.Display.LeftScroll {
+			m.Display.LeftScroll = m.Cursor
 		}
 	}
 }
 
 func (m *Model) NavigateDown() {
-	if m.Focus != pane.Left {
+	if m.Display.Focus != pane.Left {
 		return
 	}
 
@@ -61,25 +61,25 @@ func (m *Model) NavigateDown() {
 		m.Cursor++
 
 		visibleHeight := m.VisibleHeight() - config.Layout.StatusBarHeight - config.Layout.BorderWidth
-		if m.Cursor >= m.LeftScroll+visibleHeight {
-			m.LeftScroll = m.Cursor - visibleHeight + 1
+		if m.Cursor >= m.Display.LeftScroll+visibleHeight {
+			m.Display.LeftScroll = m.Cursor - visibleHeight + 1
 		}
 	}
 }
 
 func (m *Model) NavigateToParent() error {
-	files, err := filesystem.GetFiles(m.ParentDir)
+	parentDir := m.getParentDir()
+	files, err := filesystem.GetFiles(parentDir)
 	if err != nil {
 		return err
 	}
 
-	m.CurPath = m.ParentDir
-	m.ParentDir = filesystem.ParentDir(m.CurPath)
+	m.CurPath = parentDir
 	m.FileTree = files
 	m.Cursor = 0
-	m.LeftScroll = 0
-	m.RightScroll = 0
-	m.Selected = make(map[string]struct{})
+	m.Display.LeftScroll = 0
+	m.Display.RightScroll = 0
+	m.IO.Selected = make(map[string]struct{})
 
 	return nil
 }
@@ -92,27 +92,26 @@ func (m *Model) NavigateInto() error {
 		return err
 	}
 
-	m.ParentDir = m.CurPath
 	m.CurPath = newPath
 	m.FileTree = files
 	m.Cursor = 0
-	m.LeftScroll = 0
-	m.RightScroll = 0
-	m.Selected = make(map[string]struct{})
+	m.Display.LeftScroll = 0
+	m.Display.RightScroll = 0
+	m.IO.Selected = make(map[string]struct{})
 
 	return nil
 }
 
 func (m *Model) ScrollRightUp() {
-	if m.RightScroll > 0 {
-		m.RightScroll--
+	if m.Display.RightScroll > 0 {
+		m.Display.RightScroll--
 	}
 }
 
 func (m *Model) ScrollRightDown() {
-	m.RightScroll++
+	m.Display.RightScroll++
 }
 
 func (m *Model) ResetRightScroll() {
-	m.RightScroll = 0
+	m.Display.RightScroll = 0
 }

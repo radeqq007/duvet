@@ -12,23 +12,23 @@ import (
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.WindowSizeMsg); ok {
-		m.Width = msg.Width
-		m.Height = msg.Height
+		m.Layout.Width = msg.Width
+		m.Layout.Height = msg.Height
 	}
 
-	switch m.Mode {
+	switch m.IO.Mode {
 	case mode.Normal:
 		return m.handleNormalModeUpdate(msg)
 	case mode.Command:
 		return m.handleCommandModeUpdate(msg)
 	case mode.Alert:
 		if _, ok := msg.(tea.KeyMsg); ok {
-			m.Mode = mode.Normal
+			m.IO.Mode = mode.Normal
 		}
 		return m, nil
 	}
 
-	m.Mode = mode.Normal
+	m.IO.Mode = mode.Normal
 
 	return m, nil
 }
@@ -38,9 +38,9 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case ":":
-			if m.Mode == mode.Normal && msg.String() == ":" {
-				m.Mode = mode.Command
-				m.CmdInput = ""
+			if m.IO.Mode == mode.Normal && msg.String() == ":" {
+				m.IO.Mode = mode.Command
+				m.IO.CmdInput = ""
 				return m, nil
 			}
 
@@ -48,7 +48,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "up", "k":
-			if m.Focus == pane.Left {
+			if m.Display.Focus == pane.Left {
 				m.NavigateUp()
 				return m, m.loadPreview()
 			} else {
@@ -56,7 +56,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "down", "j":
-			if m.Focus == pane.Left {
+			if m.Display.Focus == pane.Left {
 				m.NavigateDown()
 				return m, m.loadPreview()
 			} else {
@@ -64,18 +64,18 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "left", "h":
-			if m.Focus == pane.Left {
+			if m.Display.Focus == pane.Left {
 				if err := m.NavigateToParent(); err != nil {
 					m.ShowAlert(alert.Error, "Cannot navigate to parent:", err.Error())
 				}
 
-				m.Preview = Preview{}
+				m.Display.Preview = Preview{}
 			} else {
-				m.Focus = pane.Left
+				m.Display.Focus = pane.Left
 			}
 
 		case "right", "l":
-			m.Focus = pane.Right
+			m.Display.Focus = pane.Right
 
 		case "enter":
 			path := m.FileTree[m.Cursor]
@@ -83,7 +83,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if err := m.NavigateInto(); err != nil {
 					m.ShowAlert(alert.Error, "Cannot navigate into:", err.Error())
 				}
-				m.Preview = Preview{}
+				m.Display.Preview = Preview{}
 				return m, m.loadPreview()
 			} else {
 				newPath := filepath.Join(m.CurPath, path.Name)
@@ -92,10 +92,10 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case " ":
 			path := m.CurrentFilePath()
-			if _, ok := m.Selected[path]; ok {
-				delete(m.Selected, path)
+			if _, ok := m.IO.Selected[path]; ok {
+				delete(m.IO.Selected, path)
 			} else {
-				m.Selected[path] = struct{}{}
+				m.IO.Selected[path] = struct{}{}
 			}
 			// TODO: navigating down kinda gives nice UX but also can be annoying
 			// m.NavigateDown()
@@ -105,8 +105,10 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m.handleCommand(msg)
 
 	case PreviewLoaded:
-		m.Preview.Path = msg.Path
-		m.Preview.Content = msg.Content
+		m.Display.Preview = Preview{
+			Path:    msg.Path,
+			Content: msg.Content,
+		}
 	}
 
 	return m, nil
@@ -115,20 +117,20 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) handleCommandModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(tea.KeyMsg).String(); msg {
 	case "esc":
-		m.Mode = mode.Normal
-		m.CmdInput = ""
+		m.IO.Mode = mode.Normal
+		m.IO.CmdInput = ""
 
 	case "enter":
-		m.Mode = mode.Normal
-		return m, command.Exec(m.CmdInput)
+		m.IO.Mode = mode.Normal
+		return m, command.Exec(m.IO.CmdInput)
 
 	case "backspace":
-		if len(m.CmdInput) >= 1 {
-			m.CmdInput = m.CmdInput[:len(m.CmdInput)-1]
+		if len(m.IO.CmdInput) >= 1 {
+			m.IO.CmdInput = m.IO.CmdInput[:len(m.IO.CmdInput)-1]
 		}
 
 	default:
-		m.CmdInput += msg
+		m.IO.CmdInput += msg
 	}
 
 	return m, nil

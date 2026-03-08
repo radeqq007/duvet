@@ -14,7 +14,7 @@ import (
 )
 
 func (m Model) VisibleHeight() int {
-	return m.Height - config.Layout.HeaderFooterSize
+	return m.Layout.Height - config.Layout.HeaderFooterSize
 }
 
 func (m Model) CurrentFile() filesystem.FileNode {
@@ -22,6 +22,10 @@ func (m Model) CurrentFile() filesystem.FileNode {
 		return filesystem.FileNode{}
 	}
 	return m.FileTree[m.Cursor]
+}
+
+func (m Model) getParentDir() string {
+	return filepath.Dir(m.CurPath)
 }
 
 func (m Model) CurrentFilePath() string {
@@ -40,9 +44,9 @@ func (m *Model) refreshFiles() {
 }
 
 func (m *Model) ShowAlert(alertType alert.AlertType, text ...string) {
-	m.Alert.Type = alertType
-	m.Alert.Text = strings.Join(text, " ")
-	m.Mode = mode.Alert
+	m.IO.Alert.Type = alertType
+	m.IO.Alert.Text = strings.Join(text, " ")
+	m.IO.Mode = mode.Alert
 }
 
 func (m *Model) loadPreview() tea.Cmd {
@@ -56,7 +60,7 @@ func (m *Model) loadPreview() tea.Cmd {
 	}
 
 	newPath := filepath.Join(m.CurPath, current.Name)
-	if newPath == m.Preview.Path {
+	if newPath == m.Display.Preview.Path {
 		return nil
 	}
 
@@ -71,9 +75,9 @@ func (m *Model) loadPreview() tea.Cmd {
 }
 
 func (m *Model) getTargets() []string {
-	if len(m.Selected) > 0 {
-		paths := make([]string, 0, len(m.Selected))
-		for path := range m.Selected {
+	if len(m.IO.Selected) > 0 {
+		paths := make([]string, 0, len(m.IO.Selected))
+		for path := range m.IO.Selected {
 			paths = append(paths, path)
 		}
 		return paths

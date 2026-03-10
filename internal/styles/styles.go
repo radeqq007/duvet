@@ -5,56 +5,78 @@ import (
 	"github.com/radeqq007/duvet/internal/config"
 )
 
-var (
-	PaneStyle = lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color(config.Colors.PaneBorder))
+func PaneStyle(c config.ColorsConfig) lipgloss.Style {
+	return lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(c.PaneBorder))
+}
 
-	FocusedPaneStyle = lipgloss.NewStyle().
-				Border(lipgloss.RoundedBorder()).
-				BorderForeground(lipgloss.Color(config.Colors.FocusedPaneBorder))
+func FocusedPaneStyle(c config.ColorsConfig) lipgloss.Style {
+	return lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(c.FocusedPaneBorder))
+}
 
-	SelectedStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color(config.Colors.SelectedFileBG)).
-			Foreground(lipgloss.Color(config.Colors.SelectedFileFG)).
-			Bold(true)
+func SelectedStyle(c config.ColorsConfig) lipgloss.Style {
+	return lipgloss.NewStyle().
+		Background(lipgloss.Color(c.SelectedFileBG)).
+		Foreground(lipgloss.Color(c.SelectedFileFG)).
+		Bold(true)
+}
 
-	DirStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(config.Colors.DirFG)).
-			Bold(true)
+func DirStyle(c config.ColorsConfig) lipgloss.Style {
+	return lipgloss.NewStyle().
+		Foreground(lipgloss.Color(c.DirFG)).
+		Bold(true)
+}
 
-	FileStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(config.Colors.FileFG))
+func FileStyle(c config.ColorsConfig) lipgloss.Style {
+	return lipgloss.NewStyle().
+		Foreground(lipgloss.Color(c.FileFG))
+}
 
-	CmdBoxStyle = lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			Padding(0, 1).
-			Width(50).
-			BorderForeground(lipgloss.Color(config.Colors.CmdBoxBorder)).
-			Foreground(lipgloss.Color(config.Colors.CmdBoxFG))
+func CmdBoxStyle(c config.ColorsConfig) lipgloss.Style {
+	return lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		Padding(0, 1).
+		Width(50).
+		BorderForeground(lipgloss.Color(c.CmdBoxBorder)).
+		Foreground(lipgloss.Color(c.CmdBoxFG))
+}
 
-	AlertBoxStyle = lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			Padding(1, 1).
-			Width(60)
+func alertBoxStyle() lipgloss.Style {
+	return lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		Padding(1, 1).
+		Width(60)
+}
 
-	AlertNormalStyle = AlertBoxStyle.
-				BorderForeground(lipgloss.Color(config.Colors.AlertNormalBorder)).
-				Foreground(lipgloss.Color(config.Colors.AlertNormalFG))
+func AlertNormalStyle(c config.ColorsConfig) lipgloss.Style {
+	return alertBoxStyle().
+		BorderForeground(lipgloss.Color(c.AlertNormalBorder)).
+		Foreground(lipgloss.Color(c.AlertNormalFG))
+}
 
-	AlertInfoStyle = AlertBoxStyle.
-			BorderForeground(lipgloss.Color(config.Colors.AlertInfoBorder)).
-			Foreground(lipgloss.Color(config.Colors.AlertInfoFG))
+func AlertInfoStyle(c config.ColorsConfig) lipgloss.Style {
+	return alertBoxStyle().
+		BorderForeground(lipgloss.Color(c.AlertInfoBorder)).
+		Foreground(lipgloss.Color(c.AlertInfoFG))
+}
 
-	AlertErrorStyle = AlertBoxStyle.
-			BorderForeground(lipgloss.Color(config.Colors.AlertErrorBorder)).
-			Foreground(lipgloss.Color(config.Colors.AlertErrorFG))
+func AlertErrorStyle(c config.ColorsConfig) lipgloss.Style {
+	return alertBoxStyle().
+		BorderForeground(lipgloss.Color(c.AlertErrorBorder)).
+		Foreground(lipgloss.Color(c.AlertErrorFG))
+}
 
-	AlertWarningStyle = AlertBoxStyle.
-				BorderForeground(lipgloss.Color(config.Colors.AlertWarningBorder)).
-				Foreground(lipgloss.Color(config.Colors.AlertWarningFG))
+func AlertWarningStyle(c config.ColorsConfig) lipgloss.Style {
+	return alertBoxStyle().
+		BorderForeground(lipgloss.Color(c.AlertWarningBorder)).
+		Foreground(lipgloss.Color(c.AlertWarningFG))
+}
 
-	StatusBarStyle = PaneStyle.
-			Height(1).
-			Padding(0, 1)
-)
+func StatusBarStyle(c config.ColorsConfig) lipgloss.Style {
+	return PaneStyle(c).
+		Height(1).
+		Padding(0, 1)
+}

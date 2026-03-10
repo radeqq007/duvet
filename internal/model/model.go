@@ -13,6 +13,7 @@ import (
 )
 
 type Model struct {
+	config   *config.Config
 	FileTree []filesystem.FileNode
 	Cursor   int
 	CurPath  string
@@ -58,7 +59,7 @@ func (m Model) Init() tea.Cmd {
 	return nil
 }
 
-func New() Model {
+func New(cfg *config.Config) Model {
 	dir, _ := os.Getwd()
 
 	files, err := filesystem.GetFiles(dir)
@@ -66,11 +67,10 @@ func New() Model {
 		files = []filesystem.FileNode{}
 	}
 
-	// TODO: handle those errors somehow, rn it just quietly fails
-	_ = config.Load()
 	_ = config.LoadBookmarks()
 
 	return Model{
+		config: cfg,
 		FileTree: files,
 		CurPath:  dir,
 		Git:      git.GetStatus(dir),

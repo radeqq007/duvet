@@ -8,13 +8,12 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/alert"
-	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/mode"
 )
 
 func (m Model) VisibleHeight() int {
-	return m.Layout.Height - config.Layout.HeaderFooterSize
+	return m.Layout.Height - m.config.Layout.HeaderFooterSize
 }
 
 func (m Model) CurrentFile() filesystem.FileNode {
@@ -69,7 +68,7 @@ func (m *Model) loadPreview() tea.Cmd {
 		if err != nil {
 			return PreviewLoaded{Path: newPath, Content: ""}
 		}
-		highlighted := filesystem.Highlight(string(content), current.Name)
+		highlighted := filesystem.Highlight(string(content), current.Name, m.config.PreviewTheme)
 		return PreviewLoaded{Path: newPath, Content: highlighted}
 	}
 }

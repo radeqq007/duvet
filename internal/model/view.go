@@ -9,7 +9,6 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/radeqq007/duvet/internal/alert"
-	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/icons"
 	"github.com/radeqq007/duvet/internal/mode"
@@ -36,7 +35,7 @@ func (m Model) View() string {
 		if strings.HasPrefix(m.IO.CmdInput, "!") {
 			content = "$" + m.IO.CmdInput[1:]
 		}
-		cmdBox := styles.CmdBoxStyle.Render(content)
+		cmdBox := styles.CmdBoxStyle(m.config.Colors).Render(content)
 
 		x := m.Layout.Width/2 - lipgloss.Width(cmdBox)/2
 		y := m.Layout.Height/2 - lipgloss.Height(cmdBox)/2
@@ -47,13 +46,13 @@ func (m Model) View() string {
 		var alertBox string
 		switch m.IO.Alert.Type {
 		case alert.Normal:
-			alertBox = styles.AlertNormalStyle.Render(m.IO.Alert.Text)
+			alertBox = styles.AlertNormalStyle(m.config.Colors).Render(m.IO.Alert.Text)
 		case alert.Info:
-			alertBox = styles.AlertInfoStyle.Render(m.IO.Alert.Text)
+			alertBox = styles.AlertInfoStyle(m.config.Colors).Render(m.IO.Alert.Text)
 		case alert.Error:
-			alertBox = styles.AlertErrorStyle.Render(m.IO.Alert.Text)
+			alertBox = styles.AlertErrorStyle(m.config.Colors).Render(m.IO.Alert.Text)
 		case alert.Warning:
-			alertBox = styles.AlertWarningStyle.Render(m.IO.Alert.Text)
+			alertBox = styles.AlertWarningStyle(m.config.Colors).Render(m.IO.Alert.Text)
 		}
 
 		x := m.Layout.Width/2 - lipgloss.Width(alertBox)/2
@@ -68,7 +67,7 @@ func (m Model) View() string {
 func (m *Model) RenderLeftPane() string {
 	var leftContent strings.Builder
 
-	visibleHeight := m.VisibleHeight() - config.Layout.StatusBarHeight - config.Layout.BorderWidth
+	visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
 
 	start := m.Display.LeftScroll
 	end := m.Display.LeftScroll + visibleHeight
@@ -93,11 +92,11 @@ func (m *Model) RenderLeftPane() string {
 		line := fmt.Sprintf("%s %s", icon, node.Name)
 
 		if i == m.Cursor {
-			line = styles.SelectedStyle.Width(m.Layout.Width / 2).Render(line)
+			line = styles.SelectedStyle(m.config.Colors).Width(m.Layout.Width / 2).Render(line)
 		} else if node.IsDir {
-			line = styles.DirStyle.Render(line)
+			line = styles.DirStyle(m.config.Colors).Render(line)
 		} else {
-			line = styles.FileStyle.Render(line)
+			line = styles.FileStyle(m.config.Colors).Render(line)
 		}
 
 		_, _ = leftContent.WriteString(line + "\n")
@@ -109,12 +108,12 @@ func (m *Model) RenderLeftPane() string {
 
 	var leftPane string
 	if m.Display.Focus == pane.Left {
-		leftPane = styles.FocusedPaneStyle.
+		leftPane = styles.FocusedPaneStyle(m.config.Colors).
 			Width(m.Layout.Width / 2).
 			Height(visibleHeight).
 			Render(leftContent.String())
 	} else {
-		leftPane = styles.PaneStyle.
+		leftPane = styles.PaneStyle(m.config.Colors).
 			Width(m.Layout.Width / 2).
 			Height(visibleHeight).
 			Render(leftContent.String())
@@ -125,11 +124,11 @@ func (m *Model) RenderLeftPane() string {
 
 func (m *Model) RenderRightPane() string {
 	var rightContent strings.Builder
-	visibleHeight := m.VisibleHeight() - config.Layout.StatusBarHeight - config.Layout.BorderWidth
+	visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
 
 	if m.Display.Preview.Content != "" {
 		wrapped := lipgloss.NewStyle().
-			Width(m.Layout.Width/2 - config.Layout.BorderWidth*2).
+			Width(m.Layout.Width/2 - m.config.Layout.BorderWidth*2).
 			Render(m.Display.Preview.Content)
 
 		visualLines := strings.Split(wrapped, "\n")
@@ -150,12 +149,12 @@ func (m *Model) RenderRightPane() string {
 
 	var rightPane string
 	if m.Display.Focus == pane.Right {
-		rightPane = styles.FocusedPaneStyle.
+		rightPane = styles.FocusedPaneStyle(m.config.Colors).
 			Width(m.Layout.Width / 2).
 			Height(visibleHeight).
 			Render(rightContent.String())
 	} else {
-		rightPane = styles.PaneStyle.
+		rightPane = styles.PaneStyle(m.config.Colors).
 			Width(m.Layout.Width / 2).
 			Height(visibleHeight).
 			Render(rightContent.String())
@@ -206,14 +205,14 @@ func (m *Model) RenderStatusBar() string {
 		left,
 	) - ansi.StringWidth(
 		right,
-	) - config.Layout.BorderWidth*2 - 2
+	) - m.config.Layout.BorderWidth*2 - 2
 	spaceCount = max(spaceCount, 0)
 
 	spacer := strings.Repeat(" ", spaceCount)
 
 	content := left + spacer + right
 
-	bar := styles.StatusBarStyle.Render(content)
+	bar := styles.StatusBarStyle(m.config.Colors).Render(content)
 
 	return bar
 }

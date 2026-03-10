@@ -7,8 +7,9 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-type fileConfig struct {
+type Config struct {
 	Colors        ColorsConfig `toml:"colors"`
+	Layout        LayoutConfig `toml:"-"`
 	DefaultEditor string       `toml:"default_editor"`
 	PreviewTheme  string       `toml:"preview_theme"`
 }
@@ -43,7 +44,7 @@ type ColorsConfig struct {
 	ErrorBorder        string `toml:"error_border"`
 }
 
-var Layout = LayoutConfig{
+var defaultLayout = LayoutConfig{
 	BorderWidth:      1,
 	HeaderFooterSize: 4,
 	StatusBarHeight:  1,
@@ -51,7 +52,7 @@ var Layout = LayoutConfig{
 	DefaultPaneWidth: 40,
 }
 
-var Colors = ColorsConfig{
+var defaultColors = ColorsConfig{
 	PaneBorder:         "159",
 	FocusedPaneBorder:  "153",
 	SelectedFileBG:     "62",
@@ -71,38 +72,36 @@ var Colors = ColorsConfig{
 }
 
 var (
-	DefaultEditor = "vim"
-	PreviewTheme  = "dracula"
+	defaultEditor = "vim"
+	defaultPreviewTheme = "dracula"
 )
 
-func Load() error {
+func Get() (*Config, error) {
+
+	var conf Config
+	conf.Colors = defaultColors
+	conf.Layout = defaultLayout
+	conf.DefaultEditor = defaultEditor
+	conf.PreviewTheme = defaultPreviewTheme
+
 	configDir, err := os.UserConfigDir()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	configPath := filepath.Join(configDir, "duvet", "config.toml")
-	if _, err := os.Stat(configPath); err != nil && os.IsNotExist(err) {
-		return nil
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		return &conf, nil
 	}
 
 	data, err := os.ReadFile(configPath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	var fc fileConfig
-	fc.Colors = Colors
-	fc.DefaultEditor = DefaultEditor
-	fc.PreviewTheme = PreviewTheme
-
-	if err := toml.Unmarshal(data, &fc); err != nil {
-		return err
+	if err := toml.Unmarshal(data, &conf); err != nil {
+		return nil, err
 	}
 
-	Colors = fc.Colors
-	DefaultEditor = fc.DefaultEditor
-	PreviewTheme = fc.PreviewTheme
-
-	return nil
+	return &conf, nil
 }

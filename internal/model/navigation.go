@@ -5,24 +5,23 @@ import (
 	"runtime"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/git"
 	"github.com/radeqq007/duvet/internal/pane"
 )
 
-func openFile(path string) tea.Cmd {
+func (m *Model) openFile(path string) tea.Cmd {
 	if isMediaFile(path) {
-		return openWithSystem(path)
+		return m.openWithSystem(path)
 	}
 
-	c := exec.Command(config.DefaultEditor, path)
+	c := exec.Command(m.config.DefaultEditor, path)
 	return tea.ExecProcess(c, func(err error) tea.Msg {
 		return FileClosed{Err: err}
 	})
 }
 
-func openWithSystem(path string) tea.Cmd {
+func (m *Model) openWithSystem(path string) tea.Cmd {
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
 	case "darwin":
@@ -61,7 +60,7 @@ func (m *Model) NavigateDown() {
 	if m.Cursor < len(m.FileTree)-1 {
 		m.Cursor++
 
-		visibleHeight := m.VisibleHeight() - config.Layout.StatusBarHeight - config.Layout.BorderWidth
+		visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
 		if m.Cursor >= m.Display.LeftScroll+visibleHeight {
 			m.Display.LeftScroll = m.Cursor - visibleHeight + 1
 		}

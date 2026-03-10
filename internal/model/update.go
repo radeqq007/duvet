@@ -87,7 +87,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, m.loadPreview()
 			} else {
 				newPath := filepath.Join(m.CurPath, path.Name)
-				return m, openFile(newPath)
+				return m, m.openFile(newPath)
 			}
 
 		case " ":

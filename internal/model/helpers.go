@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strings"
 
+	"charm.land/lipgloss/v2"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/filesystem"
@@ -101,4 +102,10 @@ func isMediaFile(path string) bool {
 	}
 
 	return slices.Contains(mediaExtensions, strings.ToLower(filepath.Ext(path)))
+}
+
+func wrapLines(content string, width int) string {
+	return lipgloss.NewStyle().
+		Width(width).
+		Render(content)
 }

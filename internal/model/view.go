@@ -127,16 +127,13 @@ func (m *Model) RenderRightPane() string {
 	visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
 
 	if m.Display.Preview.Content != "" {
-		wrapped := lipgloss.NewStyle().
-			Width(m.Layout.Width/2 - m.config.Layout.BorderWidth*2).
-			Render(m.Display.Preview.Content)
+		lines := strings.Split(wrapLines(m.Display.Preview.Content, m.Layout.Width/2 - m.config.Layout.BorderWidth*2), "\n")
 
-		visualLines := strings.Split(wrapped, "\n")
 		start := m.Display.RightScroll
-		end := min(start+visibleHeight, len(visualLines))
+		end := min(start+visibleHeight, len(lines))
 
 		for i := start; i < end; i++ {
-			rightContent.WriteString(visualLines[i] + "\n")
+			rightContent.WriteString(lines[i] + "\n")
 		}
 		for i := end - start; i < visibleHeight; i++ {
 			rightContent.WriteByte('\n')

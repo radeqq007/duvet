@@ -85,6 +85,10 @@ func (m *Model) RenderLeftPane() string {
 			icon = icons.GetIcon(filepath.Ext(node.Name))
 		}
 
+		if status, ok := m.Git.Files[filepath.Join(m.CurPath, node.Name)]; ok {
+			icon = status + " " + icon
+		}
+
 		if isSelected {
 			icon = "▌ " + icon
 		}
@@ -127,7 +131,7 @@ func (m *Model) RenderRightPane() string {
 	visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
 
 	if m.Display.Preview.Content != "" {
-		lines := strings.Split(wrapLines(m.Display.Preview.Content, m.Layout.Width/2 - m.config.Layout.BorderWidth*2), "\n")
+		lines := strings.Split(wrapLines(m.Display.Preview.Content, m.Layout.Width/2-m.config.Layout.BorderWidth*2), "\n")
 
 		start := m.Display.RightScroll
 		end := min(start+visibleHeight, len(lines))

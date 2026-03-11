@@ -4,7 +4,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
-	
+
 	"charm.land/lipgloss/v2"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/filesystem"
@@ -116,12 +116,12 @@ func (m *Model) ScrollRightDown() {
 	// TODO: MAKE THIS CODE NOT SUCK
 	// calculate the amount of all rendered lines
 	wrapped := lipgloss.NewStyle().
-			Width(m.Layout.Width/2 - m.config.Layout.BorderWidth*2).
-			Render(m.Display.Preview.Content)
+		Width(m.Layout.Width/2 - m.config.Layout.BorderWidth*2).
+		Render(m.Display.Preview.Content)
 
 	lines := strings.Split(wrapped, "\n")
-	
-	if m.Display.RightScroll < len(lines) - 1 {
+
+	if m.Display.RightScroll < len(lines)-1 {
 		m.Display.RightScroll++
 	}
 }

@@ -30,8 +30,10 @@ func GetStatus(dir string) *Status {
 		if line == "" {
 			continue
 		}
-		status := strings.TrimSpace(line[:2])
-		path := line[3:]
+		
+		status := line[:2]
+		path := strings.TrimSpace(line[2:])
+
 		files[filepath.Join(root, path)] = status
 	}
 

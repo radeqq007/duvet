@@ -10,6 +10,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/filesystem"
+	"github.com/radeqq007/duvet/internal/git"
 	"github.com/radeqq007/duvet/internal/mode"
 )
 
@@ -41,6 +42,7 @@ func (m *Model) refreshFiles() {
 	if err == nil {
 		m.FileTree = files
 	}
+	m.Git = git.GetStatus(m.CurPath)
 }
 
 func (m *Model) ShowAlert(alertType alert.AlertType, text ...string) {

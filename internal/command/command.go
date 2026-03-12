@@ -24,12 +24,3 @@ func Exec(input string) tea.Cmd {
 		}
 	}
 }
-
-// var commands = map[string]func(...string) tea.Cmd{
-// 	"q":    handleQuit,
-// 	"quit": handleQuit,
-// }
-
-// func handleQuit(args ...string) tea.Cmd {
-// 	return tea.Quit
-// }

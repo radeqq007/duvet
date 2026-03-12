@@ -35,7 +35,6 @@ func GetStatus(dir string) *Status {
 		}
 
 		status := line[:2]
-		// status = colorStatus(status)
 
 		path := strings.TrimSpace(line[2:])
 

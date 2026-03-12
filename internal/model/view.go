@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/filesystem"
+	"github.com/radeqq007/duvet/internal/git"
 	"github.com/radeqq007/duvet/internal/icons"
 	"github.com/radeqq007/duvet/internal/mode"
 	"github.com/radeqq007/duvet/internal/pane"
@@ -86,6 +87,11 @@ func (m *Model) RenderLeftPane() string {
 		}
 
 		if status, ok := m.Git.Files[filepath.Join(m.CurPath, node.Name)]; ok {
+			// only color the status if the file isn't currently selected
+			// cause otherwise the colors break
+			if i != m.Cursor {
+				status = git.ColorStatus(status)
+			}
 			icon = status + " " + icon
 		}
 

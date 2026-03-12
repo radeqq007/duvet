@@ -1,9 +1,12 @@
 package git
 
 import (
+	"image/color"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"charm.land/lipgloss/v2"
 )
 
 // TODO: add file status to the tree, diffs in the file preview etc.
@@ -30,8 +33,10 @@ func GetStatus(dir string) *Status {
 		if line == "" {
 			continue
 		}
-		
+
 		status := line[:2]
+		// status = colorStatus(status)
+
 		path := strings.TrimSpace(line[2:])
 
 		files[filepath.Join(root, path)] = status
@@ -45,4 +50,38 @@ func run(dir string, args ...string) (string, error) {
 	cmd.Dir = dir
 	out, err := cmd.Output()
 	return strings.TrimSpace(string(out)), err
+}
+
+func ColorStatus(status string) string {
+	var c color.Color
+	switch status {
+	case "??":
+		c = lipgloss.Green
+
+	case "!!":
+		c = lipgloss.Color("#6c6c6c")
+
+	case "A ", "AM", "A?":
+		c = lipgloss.BrightGreen
+
+	case " M", "M ", "MM":
+		c = lipgloss.BrightYellow
+
+	case " D", "D ", "MD":
+		c = lipgloss.BrightRed
+
+	case "R ", "RM":
+		c = lipgloss.BrightCyan
+
+	case "C ":
+		c = lipgloss.Cyan
+
+	case "UU", "U ", "UD", "DU":
+		c = lipgloss.Magenta
+
+	default:
+		return status
+	}
+
+	return lipgloss.NewStyle().Foreground(c).Render(status)
 }

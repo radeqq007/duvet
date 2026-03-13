@@ -103,7 +103,6 @@ func IsBinary(content []byte) bool {
 
 func Highlight(content, filename, theme string) string {
 	var buf bytes.Buffer
-	// TODO make the highligh theme configurable
 	err := quick.Highlight(&buf, content, filename, "terminal256", theme)
 	if err != nil {
 		return content

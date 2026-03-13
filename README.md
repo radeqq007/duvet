@@ -25,8 +25,9 @@ In order for icons to render properly you also need a **[Nerd Font](https://www.
 
 - `h`, `j`, `k`, `l` - move around
 - `<number><motion>` - repeat a motion (e.g. `3j` - go 3 lines down)
-- `dd` - delete current file
-- `yy` - yank current file
+- `dd` - delete selected files
+- `yy` - yank selected files
+- `p` - pasted yanked files
 - `Enter` - open the directory or a file
 - `Space` - toggle selection
 - `:` - open the command prompt

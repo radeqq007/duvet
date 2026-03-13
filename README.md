@@ -28,6 +28,9 @@ In order for icons to render properly you also need a **[Nerd Font](https://www.
 - `dd` - delete selected files
 - `yy` - yank selected files
 - `p` - pasted yanked files
+- `gg` - go to the first line
+- `G` - go to the last line
+- `<line number>G` - go to a specific line
 - `Enter` - open the directory or a file
 - `Space` - toggle selection
 - `:` - open the command prompt

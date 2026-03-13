@@ -196,6 +196,10 @@ func (m *Model) RenderStatusBar() string {
 
 	var right string
 
+	if len(m.IO.Input) > 0 {
+		right += string(m.IO.Input) + seperator
+	}
+
 	fileSize := ""
 	if !file.IsDir {
 		fileSize = filesystem.GetFileSize(m.CurrentFilePath())

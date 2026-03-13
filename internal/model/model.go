@@ -38,6 +38,7 @@ type ViewState struct {
 type IOState struct {
 	Mode     mode.Mode
 	CmdInput string
+	Input    []byte
 	Alert    alert.Alert
 	Selected map[string]struct{}
 	Yanked   []string

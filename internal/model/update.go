@@ -47,36 +47,6 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c":
 			return m, tea.Quit
 
-		case "up", "k":
-			if m.Display.Focus == pane.Left {
-				m.NavigateUp()
-				return m, m.loadPreview()
-			} else {
-				m.ScrollRightUp()
-			}
-
-		case "down", "j":
-			if m.Display.Focus == pane.Left {
-				m.NavigateDown()
-				return m, m.loadPreview()
-			} else {
-				m.ScrollRightDown()
-			}
-
-		case "left", "h":
-			if m.Display.Focus == pane.Left {
-				if err := m.NavigateToParent(); err != nil {
-					m.ShowAlert(alert.Error, "Cannot navigate to parent:", err.Error())
-				}
-
-				m.Display.Preview = Preview{}
-			} else {
-				m.Display.Focus = pane.Left
-			}
-
-		case "right", "l":
-			m.Display.Focus = pane.Right
-
 		case "enter":
 			path := m.FileTree[m.Cursor]
 			if path.IsDir {
@@ -90,6 +60,9 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, m.openFile(newPath)
 			}
 
+		case "esc":
+			m.clearInput()
+
 		case " ":
 			path := m.CurrentFilePath()
 			if _, ok := m.IO.Selected[path]; ok {
@@ -99,6 +72,12 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			// TODO: navigating down kinda gives nice UX but also can be annoying
 			// m.NavigateDown()
+
+		default:
+			if len(msg.Runes) > 0 {
+        		m.IO.Input = append(m.IO.Input, byte(msg.Runes[0]))
+    		}
+			return m.handleInput()
 		}
 
 	case command.Msg:
@@ -131,6 +110,78 @@ func (m Model) handleCommandModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	default:
 		m.IO.CmdInput += msg
+	}
+
+	return m, nil
+}
+
+func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
+	count, motion := m.parseInput()
+	// defer m.clearInput()
+
+	switch motion {
+	case "k":
+		if m.Display.Focus == pane.Left {
+			for range count {
+				m.NavigateUp()
+			}
+			m.clearInput()
+			return m, m.loadPreview()
+		} else {
+			for range count {
+				m.ScrollRightUp()
+			}
+			m.clearInput()
+		}
+
+	case "j":
+		if m.Display.Focus == pane.Left {
+			for range count {
+				m.NavigateDown()
+			}
+			m.clearInput()
+			return m, m.loadPreview()
+		} else {
+			for range count {
+				m.ScrollRightDown()
+			}
+			m.clearInput()
+		}
+		
+	case "h":
+		if m.Display.Focus == pane.Left {
+			if err := m.NavigateToParent(); err != nil {
+				m.ShowAlert(alert.Error, "Cannot navigate to parent:", err.Error())
+			}
+
+			m.Display.Preview = Preview{}
+		} else {
+			m.Display.Focus = pane.Left
+		}
+		m.clearInput()
+
+	case "l":
+		m.clearInput()
+		m.Display.Focus = pane.Right
+	
+	case "yy":
+		m.clearInput()
+		m.yank()
+
+	case "p":
+		m.clearInput()
+		m.paste()
+
+	case "dd":
+		m.clearInput()
+		m.delete()
+	
+	case "":
+		// sequence still being built, do nothin
+	
+	default:
+		// unknown sequence, discard
+		m.clearInput()
 	}
 
 	return m, nil

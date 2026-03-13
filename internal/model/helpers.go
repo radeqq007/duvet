@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 
 	"charm.land/lipgloss/v2"
@@ -85,6 +86,35 @@ func (m *Model) getTargets() []string {
 		return paths
 	}
 	return []string{m.CurrentFilePath()}
+}
+
+func (m *Model) parseInput() (int, string) {
+	if len(m.IO.Input) == 0 {
+		return 1, ""
+	}
+
+	i := 0
+	for i < len(m.IO.Input) && m.IO.Input[i] >= '0' && m.IO.Input[i] <= '9' {
+		i++
+	}
+
+	numStr := string(m.IO.Input[:i])
+	motion := string(m.IO.Input[i:])
+
+    if numStr == "" {
+        return 1, motion
+    }
+
+    n, err := strconv.Atoi(numStr)
+    if err != nil || n == 0 {
+        return 1, motion
+    }
+
+	return n, motion
+}
+
+func (m *Model) clearInput() {
+	m.IO.Input = []byte{}
 }
 
 func prettifyPath(path string) string {

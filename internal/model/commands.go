@@ -100,7 +100,7 @@ func (m *Model) delete() (tea.Model, tea.Cmd) {
 	m.refreshFiles()
 
 	// ensure that the cursor isn't out of bounds
-	m.Cursor = min(m.Cursor, len(m.FileTree) - 1)
+	m.Cursor = min(m.Cursor, len(m.FileTree)-1)
 
 	return m, nil
 }

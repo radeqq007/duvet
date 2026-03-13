@@ -61,14 +61,12 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, m.openFile(newPath)
 			}
 
-		
 		case "tab":
 			if m.Display.Focus == pane.Left {
 				m.Display.Focus = pane.Right
 			} else {
 				m.Display.Focus = pane.Left
 			}
-
 
 		case "esc":
 			m.clearInput()
@@ -101,8 +99,8 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		default:
 			if len(msg.Runes) > 0 {
-        		m.IO.Input = append(m.IO.Input, byte(msg.Runes[0]))
-    		}
+				m.IO.Input = append(m.IO.Input, byte(msg.Runes[0]))
+			}
 			return m.handleInput()
 		}
 
@@ -142,10 +140,10 @@ func (m Model) handleCommandModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 var pendingPrefixes = map[string]struct{}{
-    "d": {}, "y": {}, "g": {},
+	"d": {}, "y": {}, "g": {},
 }
 
-func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
+func (m *Model) handleInput() (tea.Model, tea.Cmd) {
 	count, motion := m.parseInput()
 	// defer m.clearInput()
 
@@ -177,14 +175,14 @@ func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
 			}
 			m.clearInput()
 		}
-		
+
 	case "h":
 		if err := m.NavigateToParent(); err != nil {
 			m.ShowAlert(alert.Error, "Cannot navigate to parent:", err.Error())
 		}
 
 		m.Display.Preview = Preview{}
-		
+
 		m.clearInput()
 
 	case "l":
@@ -201,7 +199,7 @@ func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
 			m.clearInput()
 			return m, m.openFile(newPath)
 		}
-	
+
 	case "yy":
 		m.clearInput()
 		m.yank()
@@ -224,22 +222,22 @@ func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
 			m.Display.RightScroll = 0
 			m.clearInput()
 		}
-		
+
 	case "G":
 		if m.Display.Focus == pane.Left {
 			visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
-			
+
 			if len(m.IO.Input) > 1 {
 				// has a line number
 				m.Cursor = count - 1
-				m.Display.LeftScroll = max(0, m.Cursor-visibleHeight+1)	
+				m.Display.LeftScroll = max(0, m.Cursor-visibleHeight+1)
 				return m, m.loadPreview()
 			}
 
 			m.Cursor = len(m.FileTree) - 1
-        	m.Display.LeftScroll = max(0, m.Cursor - visibleHeight + 1)
+			m.Display.LeftScroll = max(0, m.Cursor-visibleHeight+1)
 			m.clearInput()
-			
+
 			return m, m.loadPreview()
 
 		} else {
@@ -247,13 +245,13 @@ func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
 
 			lines := strings.Split(wrapLines(m.Display.Preview.Content, m.Layout.Width/2-m.config.Layout.BorderWidth*2), "\n")
 			visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
-			m.Display.RightScroll = max(0, len(lines) - visibleHeight)
+			m.Display.RightScroll = max(0, len(lines)-visibleHeight)
 			m.clearInput()
-    	}
-	
+		}
+
 	case "":
 		// sequence still being built, do nothin
-	
+
 	default:
 		if _, ok := pendingPrefixes[motion]; !ok {
 			// unknown sequence, discard

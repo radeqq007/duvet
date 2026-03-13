@@ -101,14 +101,14 @@ func (m *Model) parseInput() (int, string) {
 	numStr := string(m.IO.Input[:i])
 	motion := string(m.IO.Input[i:])
 
-    if numStr == "" {
-        return 1, motion
-    }
+	if numStr == "" {
+		return 1, motion
+	}
 
-    n, err := strconv.Atoi(numStr)
-    if err != nil || n == 0 {
-        return 1, motion
-    }
+	n, err := strconv.Atoi(numStr)
+	if err != nil || n == 0 {
+		return 1, motion
+	}
 
 	return n, motion
 }

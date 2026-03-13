@@ -72,7 +72,7 @@ var defaultColors = ColorsConfig{
 }
 
 var (
-	defaultEditor = "vim"
+	defaultEditor       = "vim"
 	defaultPreviewTheme = "dracula"
 )
 

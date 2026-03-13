@@ -112,7 +112,7 @@ func (m *Model) ScrollRightUp() {
 }
 
 func (m *Model) ScrollRightDown() {
-	lines := strings.Split(wrapLines(m.Display.Preview.Content, m.Layout.Width/2 - m.config.Layout.BorderWidth*2), "\n")
+	lines := strings.Split(wrapLines(m.Display.Preview.Content, m.Layout.Width/2-m.config.Layout.BorderWidth*2), "\n")
 	if m.Display.RightScroll < len(lines)-1 {
 		m.Display.RightScroll++
 	}

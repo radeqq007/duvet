@@ -71,7 +71,7 @@ func New(cfg *config.Config) Model {
 	_ = config.LoadBookmarks()
 
 	return Model{
-		config: cfg,
+		config:   cfg,
 		FileTree: files,
 		CurPath:  dir,
 		Git:      git.GetStatus(dir),

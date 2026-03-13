@@ -115,6 +115,10 @@ func (m Model) handleCommandModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
+var pendingPrefixes = map[string]struct{}{
+    "d": {}, "y": {}, "g": {},
+}
+
 func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
 	count, motion := m.parseInput()
 	// defer m.clearInput()
@@ -180,8 +184,10 @@ func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
 		// sequence still being built, do nothin
 	
 	default:
-		// unknown sequence, discard
-		m.clearInput()
+		if _, ok := pendingPrefixes[motion]; !ok {
+			// unknown sequence, discard
+			m.clearInput()
+		}
 	}
 
 	return m, nil

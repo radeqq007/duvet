@@ -4,7 +4,7 @@
 
 # Duvet
 
-Duvet is a terminal based file explorer with vim inspired motions and commands.
+Duvet is a terminal based file explorer with vim motions and commands.
 
 
 ## Installation
@@ -23,7 +23,10 @@ In order for icons to render properly you also need a **[Nerd Font](https://www.
 
 ## Navigation
 
-- `h`, `j`, `k`, `l` or the arrow keys - move around
+- `h`, `j`, `k`, `l` - move around
+- `<number><motion>` - repeat a motion (e.g. `3j` - go 3 lines down)
+- `dd` - delete current file
+- `yy` - yank current file
 - `Enter` - open the directory or a file
 - `Space` - toggle selection
 - `:` - open the command prompt

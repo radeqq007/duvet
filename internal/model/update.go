@@ -83,6 +83,22 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// TODO: navigating down kinda gives nice UX but also can be annoying
 			// m.NavigateDown()
 
+		case "up":
+			m.IO.Input = append(m.IO.Input, 'k')
+			return m.handleInput()
+
+		case "down":
+			m.IO.Input = append(m.IO.Input, 'j')
+			return m.handleInput()
+
+		case "left":
+			m.IO.Input = append(m.IO.Input, 'h')
+			return m.handleInput()
+
+		case "right":
+			m.IO.Input = append(m.IO.Input, 'l')
+			return m.handleInput()
+
 		default:
 			if len(msg.Runes) > 0 {
         		m.IO.Input = append(m.IO.Input, byte(msg.Runes[0]))

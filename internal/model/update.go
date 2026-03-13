@@ -2,6 +2,7 @@ package model
 
 import (
 	"path/filepath"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/alert"
@@ -179,6 +180,43 @@ func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
 	case "dd":
 		m.clearInput()
 		m.delete()
+
+	case "gg":
+		if m.Display.Focus == pane.Left {
+			m.Display.LeftScroll = 0
+			m.Cursor = 0
+			m.clearInput()
+			return m, m.loadPreview()
+		} else {
+			m.Display.RightScroll = 0
+			m.clearInput()
+		}
+		
+	case "G":
+		if m.Display.Focus == pane.Left {
+			visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
+			
+			if len(m.IO.Input) > 1 {
+				// has a line number
+				m.Cursor = count - 1
+				m.Display.LeftScroll = max(0, m.Cursor-visibleHeight+1)	
+				return m, m.loadPreview()
+			}
+
+			m.Cursor = len(m.FileTree) - 1
+        	m.Display.LeftScroll = max(0, m.Cursor - visibleHeight + 1)
+			m.clearInput()
+			
+			return m, m.loadPreview()
+
+		} else {
+			// TODO: add <line number>G motion support for the right pane
+
+			lines := strings.Split(wrapLines(m.Display.Preview.Content, m.Layout.Width/2-m.config.Layout.BorderWidth*2), "\n")
+			visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
+			m.Display.RightScroll = max(0, len(lines) - visibleHeight)
+			m.clearInput()
+    	}
 	
 	case "":
 		// sequence still being built, do nothin

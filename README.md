@@ -33,6 +33,7 @@ In order for icons to render properly you also need a **[Nerd Font](https://www.
 - `<line number>G` - go to a specific line
 - `Enter` - open the directory or a file
 - `Space` - toggle selection
+- `Tab` - switch pane focus
 - `:` - open the command prompt
 
 ## Commands

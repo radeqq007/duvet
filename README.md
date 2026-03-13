@@ -23,7 +23,7 @@ In order for icons to render properly you also need a **[Nerd Font](https://www.
 
 ## Navigation
 
-- `h`, `j`, `k`, `l` - move around
+- `h`, `j`, `k`, `l` or arrow keys - move around
 - `<number><motion>` - repeat a motion (e.g. `3j` - go 3 lines down)
 - `dd` - delete selected files
 - `yy` - yank selected files

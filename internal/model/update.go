@@ -61,6 +61,15 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, m.openFile(newPath)
 			}
 
+		
+		case "tab":
+			if m.Display.Focus == pane.Left {
+				m.Display.Focus = pane.Right
+			} else {
+				m.Display.Focus = pane.Left
+			}
+
+
 		case "esc":
 			m.clearInput()
 
@@ -154,20 +163,28 @@ func (m *Model) handleInput()  (tea.Model, tea.Cmd) {
 		}
 		
 	case "h":
-		if m.Display.Focus == pane.Left {
-			if err := m.NavigateToParent(); err != nil {
-				m.ShowAlert(alert.Error, "Cannot navigate to parent:", err.Error())
-			}
-
-			m.Display.Preview = Preview{}
-		} else {
-			m.Display.Focus = pane.Left
+		if err := m.NavigateToParent(); err != nil {
+			m.ShowAlert(alert.Error, "Cannot navigate to parent:", err.Error())
 		}
+
+		m.Display.Preview = Preview{}
+		
 		m.clearInput()
 
 	case "l":
-		m.clearInput()
-		m.Display.Focus = pane.Right
+		path := m.FileTree[m.Cursor]
+		if path.IsDir {
+			if err := m.NavigateInto(); err != nil {
+				m.ShowAlert(alert.Error, "Cannot navigate into:", err.Error())
+			}
+			m.Display.Preview = Preview{}
+			m.clearInput()
+			return m, m.loadPreview()
+		} else {
+			newPath := filepath.Join(m.CurPath, path.Name)
+			m.clearInput()
+			return m, m.openFile(newPath)
+		}
 	
 	case "yy":
 		m.clearInput()

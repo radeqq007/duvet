@@ -356,17 +356,35 @@ func (m *Model) yank() (tea.Model, tea.Cmd) {
 func (m *Model) paste() (tea.Model, tea.Cmd) {
 	for _, src := range m.IO.Yanked {
 		name := filepath.Base(src)
-		dstPath := filepath.Join(m.CurPath, name)
 
-		if _, err := os.Stat(dstPath); err == nil {
+		i := 1
+		dstPath := filepath.Join(m.CurPath, name)
+		for {
+			if _, err := os.Stat(dstPath); err != nil {
+				break
+			}
+
 			ext := filepath.Ext(name)
 			base := strings.TrimSuffix(name, ext)
-			if base == "" {
-				// dotfiles like .gitignore
-				dstPath = filepath.Join(m.CurPath, ext+"_copy")
+
+			if i == 1 {
+				if base == "" {
+					// dotfiles like .gitignore
+					dstPath = filepath.Join(m.CurPath, ext+" copy")
+
+				} else {
+					dstPath = filepath.Join(m.CurPath, base+" copy"+ext)
+				}
 			} else {
-				dstPath = filepath.Join(m.CurPath, base+"_copy"+ext)
+				if base == "" {
+					// dotfiles like .gitignore
+					dstPath = filepath.Join(m.CurPath, fmt.Sprintf("%s copy %v", ext, i))
+				} else {
+					dstPath = filepath.Join(m.CurPath, fmt.Sprintf("%s copy %v%s", base, i, ext))
+				}
 			}
+
+			i++
 		}
 
 		if err := filesystem.CopyFile(src, dstPath); err != nil {

@@ -108,10 +108,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m.handleCommand(msg)
 
 	case PreviewLoaded:
-		m.Display.Preview = Preview{
-			Path:    msg.Path,
-			Content: msg.Content,
-		}
+		m.Display.Preview = Preview(msg)
 	}
 
 	return m, nil

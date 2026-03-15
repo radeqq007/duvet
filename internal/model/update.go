@@ -78,8 +78,8 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.IO.Selected[path] = struct{}{}
 			}
-			// TODO: navigating down kinda gives nice UX but also can be annoying
-			// m.NavigateDown()
+
+			m.NavigateDown()
 
 		case "up":
 			m.IO.Input = append(m.IO.Input, 'k')

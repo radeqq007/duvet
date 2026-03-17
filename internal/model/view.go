@@ -74,7 +74,7 @@ func (m *Model) RenderLeftPane() string {
 	end := m.Display.LeftScroll + visibleHeight
 	end = min(end, len(m.FileTree))
 
-	leftContent.WriteString(m.renderFiles(start, end))
+	leftContent.WriteString(m.renderFiles(m.FileTree, start, end, m.Cursor))
 	
 
 	var leftPane string
@@ -93,13 +93,13 @@ func (m *Model) RenderLeftPane() string {
 	return leftPane
 }
 
-func (m *Model) renderFiles(start, end int) string {
+func (m *Model) renderFiles(files []filesystem.FileNode, start, end, cursor int) string {
 	var content strings.Builder
-
 	visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
+	end = min(end, len(files))
 
 	for i := start; i < end; i++ {
-		node := m.FileTree[i]
+		node := files[i]
 
 		_, isSelected := m.IO.Selected[filepath.Join(m.CurPath, node.Name)]
 
@@ -113,7 +113,7 @@ func (m *Model) renderFiles(start, end int) string {
 		if status, ok := m.Git.Files[filepath.Join(m.CurPath, node.Name)]; ok {
 			// only color the status if the file isn't currently selected
 			// cause otherwise the colors break
-			if i != m.Cursor {
+			if i != cursor {
 				status = git.ColorStatus(status)
 			}
 			icon = status + " " + icon
@@ -125,7 +125,7 @@ func (m *Model) renderFiles(start, end int) string {
 
 		line := fmt.Sprintf("%s %s", icon, node.Name)
 
-		if i == m.Cursor {
+		if i == cursor {
 			line = styles.SelectedStyle(m.config.Colors).Width(m.Layout.Width / 2).Render(line)
 		} else if node.IsDir {
 			line = styles.DirStyle(m.config.Colors).Render(line)

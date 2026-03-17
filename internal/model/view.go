@@ -74,6 +74,30 @@ func (m *Model) RenderLeftPane() string {
 	end := m.Display.LeftScroll + visibleHeight
 	end = min(end, len(m.FileTree))
 
+	leftContent.WriteString(m.renderFiles(start, end))
+	
+
+	var leftPane string
+	if m.Display.Focus == pane.Left {
+		leftPane = styles.FocusedPaneStyle(m.config.Colors).
+			Width(m.Layout.Width / 2).
+			Height(visibleHeight).
+			Render(leftContent.String())
+	} else {
+		leftPane = styles.PaneStyle(m.config.Colors).
+			Width(m.Layout.Width / 2).
+			Height(visibleHeight).
+			Render(leftContent.String())
+	}
+
+	return leftPane
+}
+
+func (m *Model) renderFiles(start, end int) string {
+	var content strings.Builder
+
+	visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
+
 	for i := start; i < end; i++ {
 		node := m.FileTree[i]
 
@@ -109,27 +133,14 @@ func (m *Model) RenderLeftPane() string {
 			line = styles.FileStyle(m.config.Colors).Render(line)
 		}
 
-		_, _ = leftContent.WriteString(line + "\n")
+		_, _ = content.WriteString(line + "\n")
 	}
 
 	for i := len(m.FileTree); i < visibleHeight; i++ {
-		leftContent.WriteByte('\n')
+		content.WriteByte('\n')
 	}
 
-	var leftPane string
-	if m.Display.Focus == pane.Left {
-		leftPane = styles.FocusedPaneStyle(m.config.Colors).
-			Width(m.Layout.Width / 2).
-			Height(visibleHeight).
-			Render(leftContent.String())
-	} else {
-		leftPane = styles.PaneStyle(m.config.Colors).
-			Width(m.Layout.Width / 2).
-			Height(visibleHeight).
-			Render(leftContent.String())
-	}
-
-	return leftPane
+	return content.String()
 }
 
 func (m *Model) RenderRightPane() string {

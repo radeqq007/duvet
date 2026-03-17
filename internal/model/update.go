@@ -39,7 +39,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case ":":
-			if m.IO.Mode == mode.Normal && msg.String() == ":" {
+			if m.IO.Mode == mode.Normal {
 				m.IO.Mode = mode.Command
 				m.IO.CmdInput = ""
 				return m, nil

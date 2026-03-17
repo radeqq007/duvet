@@ -56,24 +56,51 @@ func (m *Model) loadPreview() tea.Cmd {
 	if len(m.FileTree) == 0 {
 		return nil
 	}
-
+	
 	current := m.FileTree[m.Cursor]
-	if current.IsDir {
-		return nil
-	}
 
 	newPath := filepath.Join(m.CurPath, current.Name)
 	if newPath == m.Display.Preview.Path {
 		return nil
 	}
+	
+	if current.IsDir {
+		return m.loadDirectoryPreview(current)
+	}
+	
+
+	return m.loadFilePreview(current)
+}
+
+func (m *Model) loadFilePreview(file filesystem.FileNode) tea.Cmd {
+	newPath := filepath.Join(m.CurPath, file.Name)
 
 	return func() tea.Msg {
 		content, err := filesystem.ReadFileContent(newPath)
 		if err != nil {
 			return PreviewLoaded{Path: newPath, Content: ""}
 		}
-		highlighted := filesystem.Highlight(string(content), current.Name, m.config.PreviewTheme)
+		highlighted := filesystem.Highlight(string(content), file.Name, m.config.PreviewTheme)
 		return PreviewLoaded{Path: newPath, Content: highlighted}
+	}
+}
+
+func (m *Model) loadDirectoryPreview(dir filesystem.FileNode) tea.Cmd {
+	newPath := filepath.Join(m.CurPath, dir.Name)
+	rightScroll := m.Display.RightScroll
+	visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
+	
+	return func() tea.Msg {
+		files, err := filesystem.GetFiles(newPath)
+		if err != nil {
+			return PreviewLoaded{Path: newPath, Content: ""}
+		}
+
+		end := min(rightScroll + visibleHeight, len(m.FileTree))
+
+		content := m.renderFiles(files, rightScroll, end, -1)
+
+		return PreviewLoaded{Path: newPath, Content: content}
 	}
 }
 

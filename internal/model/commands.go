@@ -112,7 +112,7 @@ func (m *Model) touch(args []string) (tea.Model, tea.Cmd) {
 
 	path := filepath.Join(m.CurPath, args[0])
 
-	_, err := os.Create(path)
+	err := filesystem.CreateFile(path)
 	if err != nil {
 		m.ShowAlert(alert.Error, "Error creating a file: ", err.Error())
 	}
@@ -129,7 +129,7 @@ func (m *Model) mkdir(args []string) (tea.Model, tea.Cmd) {
 
 	path := filepath.Join(m.CurPath, args[0])
 
-	err := os.Mkdir(path, 0755)
+	err := filesystem.CreateDirectory(path)
 	if err != nil {
 		m.ShowAlert(alert.Error, "Error creating a directory: ", err.Error())
 	}

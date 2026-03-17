@@ -126,3 +126,15 @@ func CopyFile(src, dst string) error {
 	_, err = io.Copy(out, in)
 	return err
 }
+
+func CreateDirectory(path string) error {
+	return os.Mkdir(path, 0755)
+}
+
+func CreateFile(path string) error {
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	return f.Close()
+}

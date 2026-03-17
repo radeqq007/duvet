@@ -11,8 +11,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/lithammer/fuzzysearch/fuzzy"
 	"github.com/radeqq007/duvet/internal/alert"
+	"github.com/radeqq007/duvet/internal/bookmarks"
 	"github.com/radeqq007/duvet/internal/command"
-	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 )
 
@@ -188,7 +188,7 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 		}
 
 		name := args[1]
-		err := config.SetBookmark(name, m.CurPath)
+		err := bookmarks.SetBookmark(name, m.CurPath)
 		if err != nil {
 			m.ShowAlert(alert.Error, "Error saving the bookmark:", err.Error())
 		}
@@ -200,7 +200,7 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 
 		name := args[1]
 
-		if path, ok := config.GetBookmark(name); !ok {
+		if path, ok := bookmarks.GetBookmark(name); !ok {
 			m.ShowAlert(alert.Error, "No bookmark '"+name+"' found.")
 		} else {
 			m.CurPath = path
@@ -210,7 +210,7 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 	case "list":
 		var text strings.Builder
 		text.WriteString("Bookmark list:\n")
-		for name, path := range config.GetBookmarks() {
+		for name, path := range bookmarks.GetBookmarks() {
 			fmt.Fprintf(&text, "%s: %s\n", name, path)
 		}
 		m.ShowAlert(alert.Info, text.String())
@@ -220,7 +220,7 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 			return m, nil
 		}
 		name := args[1]
-		err := config.DeleteBookmark(name)
+		err := bookmarks.DeleteBookmark(name)
 		if err != nil {
 			m.ShowAlert(alert.Error, "Error deleting the bookmark:", err.Error())
 		}

@@ -5,6 +5,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/alert"
+	"github.com/radeqq007/duvet/internal/bookmarks"
 	"github.com/radeqq007/duvet/internal/config"
 	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/git"
@@ -68,7 +69,7 @@ func New(cfg *config.Config) Model {
 		files = []filesystem.FileNode{}
 	}
 
-	_ = config.LoadBookmarks()
+	_ = bookmarks.LoadBookmarks()
 
 	return Model{
 		config:   cfg,

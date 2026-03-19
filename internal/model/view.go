@@ -75,7 +75,6 @@ func (m *Model) RenderLeftPane() string {
 	end = min(end, len(m.FileTree))
 
 	leftContent.WriteString(m.renderFiles(m.FileTree, start, end, m.Cursor))
-	
 
 	var leftPane string
 	if m.Display.Focus == pane.Left {
@@ -107,7 +106,12 @@ func (m *Model) renderFiles(files []filesystem.FileNode, start, end, cursor int)
 		if node.IsDir {
 			icon = "\uf4d3"
 		} else {
-			icon = icons.GetIcon(filepath.Ext(node.Name))
+			ic := icons.GetIcon(filepath.Ext(node.Name))
+			if i != m.Cursor {
+				icon = lipgloss.NewStyle().Foreground(lipgloss.Color(ic.Color)).Render(ic.Icon)
+			} else {
+				icon = ic.Icon
+			}
 		}
 
 		if status, ok := m.Git.Files[filepath.Join(m.CurPath, node.Name)]; ok {
@@ -187,7 +191,8 @@ func (m *Model) RenderStatusBar() string {
 	if file.IsDir {
 		icon = "\uf4d3"
 	} else {
-		icon = icons.GetIcon(file.Name)
+		i := icons.GetIcon(file.Name)
+		icon = lipgloss.NewStyle().Foreground(lipgloss.Color(i.Color)).Render(i.Icon)
 	}
 
 	seperator := " | "

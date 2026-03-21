@@ -55,7 +55,7 @@ var defaultLayout = LayoutConfig{
 var defaultColors = ColorsConfig{
 	PaneBorder:         "159",
 	FocusedPaneBorder:  "153",
-	SelectedFileBG:     "62",
+	SelectedFileBG:     "153",
 	SelectedFileFG:     "230",
 	DirFG:              "39",
 	FileFG:             "252",

@@ -129,6 +129,10 @@ func (m *Model) renderFiles(files []filesystem.FileNode, start, end, cursor int)
 
 		line := fmt.Sprintf("%s %s", icon, node.Name)
 
+		for i := ansi.StringWidth(line); i < m.Layout.Width/2-2*m.config.Layout.BorderWidth; i++ {
+			line += " "
+		}
+
 		if i == cursor {
 			line = styles.SelectedStyle(m.config.Colors).Width(m.Layout.Width / 2).Render(line)
 		} else if node.IsDir {

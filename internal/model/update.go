@@ -15,6 +15,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.WindowSizeMsg); ok {
 		m.Layout.Width = msg.Width
 		m.Layout.Height = msg.Height
+
+		// this is only needed for the initial preview to load
+		return m, m.loadPreview()
 	}
 
 	switch m.IO.Mode {

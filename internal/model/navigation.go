@@ -2,6 +2,7 @@ package model
 
 import (
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -75,6 +76,8 @@ func (m *Model) NavigateToParent() error {
 		return err
 	}
 
+	prevDir := filepath.Base(m.CurPath)
+
 	m.CurPath = parentDir
 	m.FileTree = files
 	m.Cursor = 0
@@ -82,6 +85,20 @@ func (m *Model) NavigateToParent() error {
 	m.Display.RightScroll = 0
 	m.IO.Selected = make(map[string]struct{})
 	m.Git = git.GetStatus(m.CurPath)
+
+	for i, f := range m.FileTree {
+		if f.Name == prevDir {
+			m.Cursor = i
+			
+			visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
+	
+			if m.Cursor >= visibleHeight {
+				m.Display.LeftScroll = m.Cursor - visibleHeight + 1
+			}
+			break;
+		}
+
+	}
 
 	return nil
 }

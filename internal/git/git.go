@@ -9,7 +9,6 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
-// TODO: add file status to the tree, diffs in the file preview etc.
 type Status struct {
 	Root   string
 	Branch string

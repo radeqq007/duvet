@@ -2,6 +2,14 @@
   <img src=".github/assets/logo.png" width="250" alt="Duvet logo">
 </div>
 
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/radeqq007/duvet)
+![GitHub License](https://img.shields.io/github/license/radeqq007/duvet)
+![Last commit](https://img.shields.io/github/last-commit/radeqq007/duvet)
+[![Build](https://github.com/radeqq007/duvet/actions/workflows/build.yml/badge.svg)](https://github.com/radeqq007/duvet/actions/workflows/build.yml)
+[![Lint](https://github.com/radeqq007/duvet/actions/workflows/lint.yml/badge.svg)](https://github.com/radeqq007/duvet/actions/workflows/lint.yml)
+![GitHub stars](https://img.shields.io/github/stars/radeqq007/duvet?style=social)
+
+
 # What is Duvet?
 
 Duvet is a fast, keyboard-driven file explorer that lives entirely in your terminal. If you use Vim, you already know how to navigate it. Browse directories, preview files with syntax highlighting, manage bookmarks, run shell commands, and see git status — all without leaving the terminal.

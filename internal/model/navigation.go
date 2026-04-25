@@ -89,13 +89,13 @@ func (m *Model) NavigateToParent() error {
 	for i, f := range m.FileTree {
 		if f.Name == prevDir {
 			m.Cursor = i
-			
+
 			visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
-	
+
 			if m.Cursor >= visibleHeight {
 				m.Display.LeftScroll = m.Cursor - visibleHeight + 1
 			}
-			break;
+			break
 		}
 
 	}

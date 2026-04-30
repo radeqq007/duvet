@@ -203,8 +203,12 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 		if path, ok := bookmarks.GetBookmark(name); !ok {
 			m.ShowAlert(alert.Error, "No bookmark '"+name+"' found.")
 		} else {
-			m.NavigateInto(path)
-			m.refreshFiles()
+			err := m.NavigateInto(path)
+			if err != nil {
+				m.ShowAlert(alert.Error, "Error navigating into", path + ":", err.Error())
+			} else {
+				m.refreshFiles()
+			}
 		}
 
 	case "list":

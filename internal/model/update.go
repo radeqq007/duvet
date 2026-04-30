@@ -54,7 +54,7 @@ func (m Model) handleNormalModeUpdate(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			path := m.FileTree[m.Cursor]
 			if path.IsDir {
-				if err := m.NavigateInto(); err != nil {
+				if err := m.NavigateInto(m.CurrentFilePath()); err != nil {
 					m.ShowAlert(alert.Error, "Cannot navigate into:", err.Error())
 				}
 				m.Display.Preview = Preview{}
@@ -188,7 +188,7 @@ func (m *Model) handleInput() (tea.Model, tea.Cmd) {
 	case "l":
 		path := m.FileTree[m.Cursor]
 		if path.IsDir {
-			if err := m.NavigateInto(); err != nil {
+			if err := m.NavigateInto(m.CurrentFilePath()); err != nil {
 				m.ShowAlert(alert.Error, "Cannot navigate into:", err.Error())
 			}
 			m.Display.Preview = Preview{}

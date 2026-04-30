@@ -103,15 +103,13 @@ func (m *Model) NavigateToParent() error {
 	return nil
 }
 
-func (m *Model) NavigateInto() error {
-	newPath := m.CurrentFilePath()
-
-	files, err := filesystem.GetFiles(newPath)
+func (m *Model) NavigateInto(path string) error {
+	files, err := filesystem.GetFiles(path)
 	if err != nil {
 		return err
 	}
 
-	m.CurPath = newPath
+	m.CurPath = path 
 	m.FileTree = files
 	m.Cursor = 0
 	m.Display.LeftScroll = 0

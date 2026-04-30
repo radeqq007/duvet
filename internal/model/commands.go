@@ -203,7 +203,7 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 		if path, ok := bookmarks.GetBookmark(name); !ok {
 			m.ShowAlert(alert.Error, "No bookmark '"+name+"' found.")
 		} else {
-			m.CurPath = path
+			m.NavigateInto(path)
 			m.refreshFiles()
 		}
 

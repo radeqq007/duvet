@@ -205,7 +205,7 @@ func (m *Model) bookmark(args []string) (tea.Model, tea.Cmd) {
 		} else {
 			err := m.NavigateInto(path)
 			if err != nil {
-				m.ShowAlert(alert.Error, "Error navigating into", path + ":", err.Error())
+				m.ShowAlert(alert.Error, "Error navigating into", path+":", err.Error())
 			} else {
 				m.refreshFiles()
 			}

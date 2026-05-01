@@ -109,7 +109,7 @@ func (m *Model) NavigateInto(path string) error {
 		return err
 	}
 
-	m.CurPath = path 
+	m.CurPath = path
 	m.FileTree = files
 	m.Cursor = 0
 	m.Display.LeftScroll = 0

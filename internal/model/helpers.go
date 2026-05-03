@@ -34,10 +34,6 @@ func (m Model) CurrentFilePath() string {
 	return filepath.Join(m.CurPath, m.CurrentFile().Name)
 }
 
-func (m *Model) getCurrentFile() filesystem.FileNode {
-	return m.FileTree[m.Cursor]
-}
-
 func (m *Model) refreshFiles() {
 	files, err := filesystem.GetFiles(m.CurPath)
 	if err == nil {

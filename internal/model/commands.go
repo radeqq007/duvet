@@ -68,7 +68,7 @@ func (m *Model) handleCommand(msg command.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) rename(args []string) (tea.Model, tea.Cmd) {
-	file := m.getCurrentFile()
+	file := m.CurrentFile()
 
 	if len(args) < 1 {
 		return m, nil

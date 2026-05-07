@@ -14,6 +14,15 @@
 
 Duvet is a fast, keyboard-driven file explorer that lives entirely in your terminal. If you use Vim, you already know how to navigate it. Browse directories, preview files with syntax highlighting, manage bookmarks, run shell commands, and see git status — all without leaving the terminal.
 
+## Why duvet?
+
+||Duvet|Ranger|nnn|
+|-|:-:|:-:|:-:|
+|Vim Keys|✔️|Partial|❌|
+|Git Integration|✔️|❌|❌|
+|Bookmarks|✔️|❌|❌|
+
+
 ## Installation
 
 Requires Go 1.25+ and a **[Nerd Font](https://www.nerdfonts.com/)** for icons.
@@ -26,6 +35,7 @@ You run it with:
 ```sh
 duvet
 ```
+
 
 ## Navigation
 

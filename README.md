@@ -19,8 +19,10 @@ Duvet is a fast, keyboard-driven file explorer that lives entirely in your termi
 ||Duvet|Ranger|nnn|
 |-|:-:|:-:|:-:|
 |Vim Keys|✔️|✔️|❌|
+|Bookmarks|✔️|✔️|❌|
 |Git Integration|✔️|❌|❌|
-|Bookmarks|✔️|❌|❌|
+|Fuzzy Find|✔️|❌|❌|
+|Nerd Font Icons|✔️|❌|❌|
 
 
 ## Installation

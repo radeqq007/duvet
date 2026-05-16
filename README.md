@@ -58,6 +58,7 @@ duvet
 | `dd` | Delete selected / current file |
 | `Esc` | Clear pending input |
 | `:` | Open command prompt |
+| `.` | Toggle dotfiles visibility |
 
 ## Commands
 

@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/radeqq007/duvet/internal/alert"
 	"github.com/radeqq007/duvet/internal/command"
+	"github.com/radeqq007/duvet/internal/filesystem"
 	"github.com/radeqq007/duvet/internal/mode"
 	"github.com/radeqq007/duvet/internal/pane"
 )
@@ -199,6 +200,31 @@ func (m *Model) handleInput() (tea.Model, tea.Cmd) {
 			m.clearInput()
 			return m, m.openFile(newPath)
 		}
+
+	case ".":
+		m.clearInput()
+		m.Display.DotFilesVisible = !m.Display.DotFilesVisible
+
+		files, err := filesystem.GetFiles(m.CurPath)
+		if err != nil {
+			m.ShowAlert(alert.Error, "Error reading files.")
+			return m, nil
+		}
+
+		if m.Display.DotFilesVisible {
+			m.FileTree = files
+		} else {
+			noDotfiles := make([]filesystem.FileNode, 0, len(files))
+			for _, file := range files {
+				if !strings.HasPrefix(file.Name, ".") {
+					noDotfiles = append(noDotfiles, file)
+				}
+			}
+			m.Cursor = min(m.Cursor, len(noDotfiles)-1)
+			m.FileTree = noDotfiles 
+		}
+		return m, m.loadPreview()
+
 
 	case "yy":
 		m.clearInput()

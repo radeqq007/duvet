@@ -30,10 +30,11 @@ type LayoutState struct {
 }
 
 type ViewState struct {
-	LeftScroll  int
-	RightScroll int
-	Preview     Preview
-	Focus       pane.Pane
+	LeftScroll      int
+	RightScroll     int
+	DotFilesVisible bool
+	Preview         Preview
+	Focus           pane.Pane
 }
 
 type IOState struct {
@@ -79,5 +80,6 @@ func New(cfg *config.Config) Model {
 		IO: IOState{
 			Selected: make(map[string]struct{}),
 		},
+		Display: ViewState{ DotFilesVisible: true },
 	}
 }

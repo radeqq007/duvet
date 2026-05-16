@@ -129,7 +129,7 @@ func (m *Model) renderFiles(files []filesystem.FileNode, start, end, cursor int)
 
 		line := fmt.Sprintf("%s %s", icon, node.Name)
 
-		for i := ansi.StringWidth(line); i < m.Layout.Width/2-2*m.config.Layout.BorderWidth; i++ {
+		for i := ansi.StringWidth(line); i < m.InnerPaneWidth(); i++ {
 			line += " "
 		}
 
@@ -156,7 +156,7 @@ func (m *Model) RenderRightPane() string {
 	visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
 
 	if m.Display.Preview.Content != "" {
-		lines := strings.Split(wrapLines(m.Display.Preview.Content, m.Layout.Width/2-m.config.Layout.BorderWidth*2), "\n")
+		lines := strings.Split(wrapLines(m.Display.Preview.Content, m.InnerPaneWidth()), "\n")
 
 		start := m.Display.RightScroll
 		end := min(start+visibleHeight, len(lines))

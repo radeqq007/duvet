@@ -268,7 +268,7 @@ func (m *Model) handleInput() (tea.Model, tea.Cmd) {
 		} else {
 			// TODO: add <line number>G motion support for the right pane
 
-			lines := strings.Split(wrapLines(m.Display.Preview.Content, m.Layout.Width/2-m.config.Layout.BorderWidth*2), "\n")
+			lines := strings.Split(wrapLines(m.Display.Preview.Content, m.InnerPaneWidth()), "\n")
 			visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
 			m.Display.RightScroll = max(0, len(lines)-visibleHeight)
 			m.clearInput()

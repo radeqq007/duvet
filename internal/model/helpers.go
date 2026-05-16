@@ -19,6 +19,10 @@ func (m Model) VisibleHeight() int {
 	return m.Layout.Height - m.config.Layout.HeaderFooterSize
 }
 
+func (m Model) InnerPaneWidth() int {
+  return m.Layout.Width/2-m.config.Layout.BorderWidth*2
+}
+
 func (m Model) CurrentFile() filesystem.FileNode {
 	if len(m.FileTree) == 0 {
 		return filesystem.FileNode{}

@@ -221,10 +221,9 @@ func (m *Model) handleInput() (tea.Model, tea.Cmd) {
 				}
 			}
 			m.Cursor = min(m.Cursor, len(noDotfiles)-1)
-			m.FileTree = noDotfiles 
+			m.FileTree = noDotfiles
 		}
 		return m, m.loadPreview()
-
 
 	case "yy":
 		m.clearInput()

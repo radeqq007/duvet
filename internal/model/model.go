@@ -80,6 +80,6 @@ func New(cfg *config.Config) Model {
 		IO: IOState{
 			Selected: make(map[string]struct{}),
 		},
-		Display: ViewState{ DotFilesVisible: true },
+		Display: ViewState{DotFilesVisible: true},
 	}
 }

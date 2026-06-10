@@ -5,6 +5,7 @@
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/radeqq007/duvet)
 ![GitHub License](https://img.shields.io/github/license/radeqq007/duvet)
 ![Last commit](https://img.shields.io/github/last-commit/radeqq007/duvet)
+[![Go Report Card](https://goreportcard.com/badge/github.com/radeqq007/duvet)](https://goreportcard.com/report/github.com/radeqq007/duvet)
 [![Build](https://github.com/radeqq007/duvet/actions/workflows/build.yml/badge.svg)](https://github.com/radeqq007/duvet/actions/workflows/build.yml)
 [![Lint](https://github.com/radeqq007/duvet/actions/workflows/lint.yml/badge.svg)](https://github.com/radeqq007/duvet/actions/workflows/lint.yml)
 ![GitHub stars](https://img.shields.io/github/stars/radeqq007/duvet?style=social)

@@ -253,7 +253,7 @@ func (m *Model) handleInput() (tea.Model, tea.Cmd) {
 			visibleHeight := m.VisibleHeight() - m.config.Layout.StatusBarHeight - m.config.Layout.BorderWidth
 
 			if len(m.IO.Input) > 1 {
-				// has a line number
+				count = min(count, len(m.FileTree))
 				m.Cursor = count - 1
 				m.Display.LeftScroll = max(0, m.Cursor-visibleHeight+1)
 				return m, m.loadPreview()
